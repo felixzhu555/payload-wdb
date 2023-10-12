@@ -21,6 +21,14 @@ const prettySyncLogger = {
   loggerOptions: {},
 }
 
+process.env.PAYLOAD_DROP_DATABASE = 'false'
+
+process.env.NODE_ENV = 'test'
+
+const DB_PASS = ''
+
+process.env.PAYLOAD_TEST_MONGO_URL = `mongodb+srv://payload:${DB_PASS}@cluster0.jc6zenu.mongodb.net/?retryWrites=true&w=majority`
+
 if (!testSuiteDir) {
   console.error('ERROR: You must provide an argument for "testSuiteDir"')
   process.exit(1)
