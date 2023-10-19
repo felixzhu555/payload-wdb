@@ -34,7 +34,10 @@ if (!fs.existsSync(configPath)) {
 }
 
 process.env.PAYLOAD_CONFIG_PATH = configPath
-
+process.env.NODE_ENV = 'test'
+process.env.PAYLOAD_TEST_MONGO_URL =
+  'mongodb+srv://payload:1yRj3h85yfRTemo2@cluster0.jc6zenu.mongodb.net/?retryWrites=true&w=majority'
+process.env.PAYLOAD_DROP_DATABASE = 'false'
 // Default to true unless explicitly set to false
 if (process.env.PAYLOAD_DROP_DATABASE === 'false') {
   process.env.PAYLOAD_DROP_DATABASE = 'false'

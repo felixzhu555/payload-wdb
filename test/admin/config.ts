@@ -98,13 +98,13 @@ export default buildConfigWithDefaults({
     GlobalGroup1B,
   ],
   onInit: async (payload) => {
-    await payload.create({
-      collection: 'users',
-      data: {
-        email: devUser.email,
-        password: devUser.password,
-      },
-    })
+    // await payload.create({
+    //   collection: 'users',
+    //   data: {
+    //     email: devUser.email,
+    //     password: devUser.password,
+    //   },
+    // })
 
     await mapAsync([...Array(11)], async () => {
       await payload.create({
