@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from 'react'
-import { Collection, SanitizedCollectionConfig } from '../../../../exports/types'
-import { useConfig } from '../../utilities/Config'
 import { useTranslation } from 'react-i18next'
+
+import type { Collection } from '../../../../exports/types'
+
+import { SanitizedCollectionConfig } from '../../../../exports/types'
+import { useConfig } from '../../utilities/Config'
+import { ExportList } from './ExportList'
+import { ExportSearch } from './ExportSearch'
 
 type ExportType = {
   collections: Array<Collection>
@@ -16,8 +21,8 @@ const Export = () => {
     //    which is what should be rendered in the list
     collections,
     globals,
-    serverURL,
     routes: { admin, api },
+    serverURL,
   } = useConfig()
   const { i18n } = useTranslation('general')
   const [data, setData] = useState<ExportType>()
@@ -53,15 +58,15 @@ const Export = () => {
   }, [])
 
   return (
-    <>
+    <React.Fragment>
       LIST:
       {collections.map((collection) => (
-        <>
+        <React.Fragment>
           <br />
           Collection name: {collection.slug}
-        </>
+        </React.Fragment>
       ))}
-    </>
+    </React.Fragment>
   )
 }
 
