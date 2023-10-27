@@ -175,7 +175,7 @@ export const Routes: React.FC = () => {
                             })}
                             {/* Export Data Route */}
                             <Route path={`${match.url}/export`}>
-                              <Export data={collections} />
+                              <Export />
                             </Route>
                             <Route path={`${match.url}*`}>
                               <NotFound />
