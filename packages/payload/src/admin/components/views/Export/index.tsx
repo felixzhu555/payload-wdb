@@ -6,7 +6,7 @@ import type { Collection } from '../../../../exports/types'
 import { SanitizedCollectionConfig } from '../../../../exports/types'
 import { useConfig } from '../../utilities/Config'
 import { ExportList } from './ExportList'
-import { ExportSearch } from './ExportSearch'
+import ExportSearch from './ExportSearch/index'
 
 type ExportType = {
   collections: Array<Collection>
@@ -59,6 +59,7 @@ const Export = () => {
 
   return (
     <React.Fragment>
+      <ExportSearch collections={collections} />
       LIST:
       {collections.map((collection) => (
         <React.Fragment>
