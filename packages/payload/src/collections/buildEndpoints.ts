@@ -15,6 +15,7 @@ import create from './requestHandlers/create'
 import deleteHandler from './requestHandlers/delete'
 import deleteByID from './requestHandlers/deleteByID'
 import docAccessRequestHandler from './requestHandlers/docAccess'
+import exportFunc from './requestHandlers/export'
 import find from './requestHandlers/find'
 import findByID from './requestHandlers/findByID'
 import findVersionByID from './requestHandlers/findVersionByID'
@@ -160,6 +161,12 @@ const buildEndpoints = (collection: SanitizedCollectionConfig): Endpoint[] => {
       path: '/',
     },
   )
+
+  endpoints.push({
+    handler: exportFunc,
+    method: 'post',
+    path: '/export',
+  })
 
   return endpoints
 }
