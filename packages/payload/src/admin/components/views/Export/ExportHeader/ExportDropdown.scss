@@ -1,0 +1,39 @@
+/* DropdownButton.css (or your CSS file) */
+
+.dropdown-container {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-button {
+  background-color: #4a4a4a;
+  border-radius: 2.57px;
+  color: white;
+  padding: 5px 10px;
+  font-size: 14px;
+  border: none;
+  cursor: pointer;
+}
+
+.dropdown-content {
+  background-color: #3c3c3c;
+  border: 1px solid #4a4a4a;
+  border-radius: 3px;
+  position: absolute;
+  margin-top: 2px;
+  min-width: 98px;
+}
+
+.dropdown-content a {
+  padding: 4px 4px;
+  height: 25px;
+  font-size: 11px;
+  text-decoration: none;
+  display: block;
+  color: white;
+  border-bottom: 1px solid #4a4a4a;
+}
+
+.dropdown-content a:hover {
+  background-color: #ddd;
+}

@@ -1,0 +1,16 @@
+/* Additional style for the header */
+.header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  text-align: left;
+  padding: 0em 1em;
+  margin: 1em 0.5em;
+  /* Align the text to the left */
+}
+.title {
+  font-weight: bold;
+  color: white;
+  padding: 0em 0.2em;
+  font-size: 3em; /* You can adjust the size as needed */
+}
