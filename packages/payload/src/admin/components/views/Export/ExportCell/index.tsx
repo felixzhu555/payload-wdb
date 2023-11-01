@@ -1,28 +1,44 @@
 import React, { useState } from 'react'
+import { select } from '../../../../../fields/validations'
 import './index.scss'
 
 const ExportCell = (props) => {
-  const { name, slug, versions } = props
+  const { name, slug, versions, onSelectionChange } = props
   const [isOpen, setIsOpen] = useState(false)
   const [isSelected, setIsSelected] = useState(false)
-  const [selectedVersions, setSelectedVersions] = useState<string[]>([])
+  const [selectedVersions, setSelectedVersions] = useState({ [slug]: [] })
 
   const toggleCollection = () => {
     setIsSelected(!isSelected)
-    if (!isSelected) {
-      const versionsWithName = versions.map((element) => slug + ' ' + element)
-      setSelectedVersions(versionsWithName)
-    } else {
-      setSelectedVersions([])
-    }
+    setSelectedVersions((prevSelectedVersions) => {
+      const updatedVersions = prevSelectedVersions
+      if (!isSelected) {
+        updatedVersions[slug] = versions
+      } else {
+        updatedVersions[slug] = []
+      }
+      onSelectionChange(updatedVersions)
+      return updatedVersions
+    })
+    // This line should be outside of setSelectedVersions
   }
 
   const toggleVersion = (version) => {
-    const versionWithName = slug + ' ' + version
-    const newSelectedVersions = selectedVersions.includes(versionWithName)
-      ? selectedVersions.filter((v) => v !== versionWithName)
-      : [...selectedVersions, versionWithName]
-    setSelectedVersions(newSelectedVersions)
+    setSelectedVersions((prevSelectedVersions) => {
+      const updatedVersions = prevSelectedVersions
+      if (updatedVersions[slug].includes(version)) {
+        updatedVersions[slug] = updatedVersions[slug].filter((v) => v !== version)
+      } else {
+        updatedVersions[slug].push(version)
+      }
+      onSelectionChange(updatedVersions)
+      if (Object.keys(updatedVersions[slug]).length === 0) {
+        setIsSelected(false)
+      } else {
+        setIsSelected(true)
+      }
+      return updatedVersions
+    })
   }
 
   return (
@@ -45,7 +61,7 @@ const ExportCell = (props) => {
           <div className="version-cell" key={version}>
             <div className="checkbox-cell">
               <input
-                checked={selectedVersions.includes(slug + ' ' + version)}
+                checked={selectedVersions[slug].includes(version)}
                 className="collection-checkbox"
                 onChange={() => toggleVersion(version)} // Handle version checkbox change
                 type="checkbox"

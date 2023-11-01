@@ -10,6 +10,29 @@ const ExportSearchWrapper = (props) => {
   const [searchQuery, setSearchQuery] = useState('')
   const [searchResults, setSearchResults] = useState(allSearch)
 
+  const [selectedVersions, setSelectedVersions] = useState({})
+
+  console.log(selectedVersions)
+  const handleVersionChange = (dictionary) => {
+    setSelectedVersions((prevSelectedVersions) => {
+      return {
+        ...prevSelectedVersions,
+        ...dictionary,
+      }
+    })
+    setSelectedVersions((prevSelectedVersions) => {
+      // Use the `reduce` method to filter out keys with non-empty arrays
+      const updatedVersions = Object.keys(prevSelectedVersions).reduce((acc, key) => {
+        if (prevSelectedVersions[key].length > 0) {
+          acc[key] = prevSelectedVersions[key]
+        }
+        return acc
+      }, {})
+
+      return updatedVersions
+    })
+  }
+
   const handleSearch = (searchStr) => {
     setSearchQuery(searchStr)
     const searchTerm = searchStr.trim().toLowerCase()
@@ -24,8 +47,7 @@ const ExportSearchWrapper = (props) => {
       setSearchResults(filteredResults)
     }
   }
-  console.log(collectionsDict)
-  console.log(searchResults)
+
   return (
     <div>
       <div className="inputContainer">
@@ -47,6 +69,7 @@ const ExportSearchWrapper = (props) => {
                   slug={collectionsDict[name].slug}
                   versions={collectionsDict[name].versions} // Use "versions" instead of "version"
                   key={index} // Add a unique key for each element in the map
+                  onSelectionChange={handleVersionChange}
                 />
               ))}
             </ul>
