@@ -1,7 +1,26 @@
 import { basename } from 'path'
-import React, { useState, useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
+
 import ExportCell from '../ExportCell/index'
 import './index.scss'
+
+const WhiteSearchIcon = () => (
+  <svg
+    className="search-icon"
+    fill="none"
+    height="18"
+    stroke="white" // Set the stroke color to white
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    strokeWidth="2"
+    viewBox="0 0 24 24"
+    width="24"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <circle cx="11" cy="11" r="8" />
+    <line x1="21" x2="16.65" y1="21" y2="16.65" />
+  </svg>
+)
 
 const ExportSearchWrapper = (props) => {
   const { collectionsDict } = props
@@ -47,10 +66,10 @@ const ExportSearchWrapper = (props) => {
       setSearchResults(filteredResults)
     }
   }
-
   return (
     <div>
       <div className="inputContainer">
+        <WhiteSearchIcon />
         <input
           onChange={(e) => handleSearch(e.target.value)}
           placeholder="Search by Title"
@@ -65,11 +84,11 @@ const ExportSearchWrapper = (props) => {
             <ul>
               {searchResults.map((name, index) => (
                 <ExportCell
+                  key={index} // Add a unique key for each element in the map
                   name={name}
                   slug={collectionsDict[name].slug}
                   versions={collectionsDict[name].versions} // Use "versions" instead of "version"
                   key={index} // Add a unique key for each element in the map
-                  onSelectionChange={handleVersionChange}
                 />
               ))}
             </ul>
