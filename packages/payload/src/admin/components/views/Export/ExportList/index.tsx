@@ -1,11 +1,19 @@
 import React, { useEffect, useState } from 'react'
+import './index.scss'
+import ExportSearchWrapper from '../ExportSearchWrapper/index'
 
 const ExportList = (props) => {
-  const { collections } = props
+  const { collectionsDict } = props
+  let collectionNames = Object.keys(collectionsDict)
 
   return (
-    <div>
-      <h2>Collections</h2>
+    <div className="export-list-container">
+      <div className="header">
+        <h2>Export Function</h2>
+      </div>
+      <ul>
+        <ExportSearchWrapper collectionsDict={collectionsDict}></ExportSearchWrapper>
+      </ul>
     </div>
   )
 }

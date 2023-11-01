@@ -1,0 +1,63 @@
+.collection-cell {
+  display: flex;
+  justify-content: space-between; /* Adjust alignment as needed */
+  align-items: center;
+  flex-direction: row;
+  border: 1px solid #ccc;
+  margin: 10px;
+  cursor: pointer;
+  position: relative;
+}
+
+.checkbox-cell {
+  height: 100%; /* Cover 100% of the height */
+  width: 3%; /* Adjust the width as needed */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.dropdown-cell {
+  width: 97%; /* Adjust the width as needed */
+  height: 100%; /* Cover 100% of the height */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  overflow: hidden; /* Ensure content doesn't overflow */
+  white-space: nowrap; /* Prevent text from wrapping */
+  text-overflow: ellipsis; /* Add ellipsis for text overflow */
+  cursor: pointer;
+}
+
+.version-cell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  border: 1px solid #ccc;
+  margin: 1vh;
+  margin-left: 2.5vw;
+  cursor: pointer;
+  position: relative;
+}
+
+.collection-cell::before,
+.version-cell::before {
+  content: '';
+  display: block;
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  left: 2vw;
+  visibility: hidden;
+}
+
+.collection-name,
+.collection-version {
+  margin: 0 10px;
+  font-weight: bold;
+}
+
+.collection-checkbox {
+}

@@ -1,0 +1,21 @@
+/* index.scss */
+
+/* Style for the ExportList component */
+.export-list-container {
+  width: 90%;
+  background-color: rgb(0, 0, 0);
+  margin-left: 5vw;
+  margin-right: 5vw;
+
+  /* Additional style for the header */
+  .header {
+    text-align: left; /* Align the text to the left */
+  }
+  .header h2 {
+      font-size: 3em; /* You can adjust the size as needed */
+  }
+}
+
+ul {
+  padding-bottom: 10px; /* Adjust the padding value as needed */
+}

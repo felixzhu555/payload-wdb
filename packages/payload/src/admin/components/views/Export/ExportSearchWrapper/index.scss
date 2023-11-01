@@ -1,0 +1,19 @@
+.header {
+    text-align: left; /* Align the text to the left */
+    padding-top: 2.5vh;
+    padding-left: 20px; /* Add left padding */
+  }
+
+.inputContainer {
+  width: 100%;
+  display: flex;
+  margin-bottom: 1.5vh;
+
+input {
+  width: 100%;
+  background: rgb(56, 56, 56);
+  border: none;
+  padding: 8px; // You can adjust the padding as needed
+  color: #000000
+}
+}
