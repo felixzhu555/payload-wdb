@@ -88,6 +88,7 @@ const ExportSearchWrapper = (props) => {
                   name={name}
                   slug={collectionsDict[name].slug}
                   versions={collectionsDict[name].versions} // Use "versions" instead of "version"
+                  onSelectionChange={handleVersionChange}
                   key={index} // Add a unique key for each element in the map
                 />
               ))}
