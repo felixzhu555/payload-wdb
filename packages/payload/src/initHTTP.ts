@@ -22,6 +22,7 @@ import initGlobalsHTTP from './globals/initHTTP'
 import graphQLHandler from './graphql/graphQLHandler'
 import initGraphQLPlayground from './graphql/initPlayground'
 import { getPayload } from './payload'
+import exportHandler from './collections/requestHandlers/export'
 
 export const initHTTP = async (incomingOptions: InitOptions): Promise<Payload> => {
   const options = { ...incomingOptions }
@@ -76,7 +77,11 @@ export const initHTTP = async (incomingOptions: InitOptions): Promise<Payload> =
       initGraphQLPlayground(payload)
     }
 
-    mountEndpoints(options.express, payload.router, payload.config.endpoints)
+    // Add export endpoint
+    const newEndpoints = payload.config.endpoints
+    newEndpoints.push({ handler: exportHandler, method: 'get', path: '/export', root: true })
+
+    mountEndpoints(options.express, payload.router, newEndpoints)
 
     // Bind router to API
     payload.express.use(payload.config.routes.api, payload.router)

@@ -32,6 +32,7 @@ const Export = () => {
             'Accept-Language': i18n.language,
           },
         })
+
         return await data.json()
       })()
         .then((res) => {
@@ -50,6 +51,21 @@ const Export = () => {
 
   useEffect(() => {
     // exportData()
+    ;(async function () {
+      const data = await fetch(`${serverURL}/export`, {
+        credentials: 'include',
+        headers: {
+          'Accept-Language': i18n.language,
+        },
+      })
+      return await data.json()
+    })()
+      .then((res) => {
+        console.log(res)
+      })
+      .catch((e) => {
+        console.log(e)
+      })
   }, [])
 
   return (
