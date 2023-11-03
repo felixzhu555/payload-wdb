@@ -20,7 +20,7 @@ const Export = () => {
     routes: { admin, api },
   } = useConfig()
   const { i18n } = useTranslation('general')
-  const [data, setData] = useState<ExportType>()
+  const [data, setData] = useState([])
 
   const exportData = () => {
     // TODO: not finished
@@ -37,11 +37,6 @@ const Export = () => {
       })()
         .then((res) => {
           console.log(collection.slug, res)
-          // const newData = data || {}
-          // if (newData) {
-          //   newData[collection.slug] = res
-          //   setData(newData)
-          // }
         })
         .catch((err) => {
           console.log(err)
@@ -67,6 +62,10 @@ const Export = () => {
         console.log(e)
       })
   }, [])
+
+  useEffect(() => {
+    console.log('data ', data)
+  }, [data])
 
   return (
     <>

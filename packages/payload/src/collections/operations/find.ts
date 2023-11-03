@@ -40,8 +40,6 @@ async function find<T extends TypeWithID & Record<string, unknown>>(
   // beforeOperation - Collection
   // /////////////////////////////////////
 
-  console.log('COLLECTION: ', incomingArgs.req)
-  console.log('TILL THIS POINT')
   await args.collection.config.hooks.beforeOperation.reduce(async (priorHook, hook) => {
     await priorHook
 
@@ -249,8 +247,6 @@ async function find<T extends TypeWithID & Record<string, unknown>>(
     // /////////////////////////////////////
 
     if (shouldCommit) await payload.db.commitTransaction(req.transactionID)
-    console.log('RESULT: ', result)
-    console.log('TILL HERE')
     return result
   } catch (error: unknown) {
     await killTransaction(req)
