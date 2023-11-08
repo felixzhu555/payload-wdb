@@ -2,8 +2,8 @@
 import type { CollectionConfig } from '../collections/config/types'
 import type { Access, Config } from '../config/types'
 
+import createHandler from './requestHandlers/create'
 import deleteHandler from './requestHandlers/delete'
-import exportHandler from './requestHandlers/export'
 import findHandler from './requestHandlers/find'
 
 const dataExportAccess: Access = ({ req }) => ({
@@ -14,8 +14,8 @@ const dataExportAccess: Access = ({ req }) => ({
 
 const getDataExportsCollection = (config: Config): CollectionConfig => ({
   access: {
-    delete: dataExportAccess,
     create: dataExportAccess,
+    delete: dataExportAccess,
     read: dataExportAccess,
   },
   admin: {
@@ -23,7 +23,7 @@ const getDataExportsCollection = (config: Config): CollectionConfig => ({
   },
   endpoints: [
     {
-      handler: exportHandler,
+      handler: createHandler,
       method: 'post',
       path: '/create',
     },
