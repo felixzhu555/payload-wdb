@@ -2,7 +2,9 @@
 import type { CollectionConfig } from '../collections/config/types'
 import type { Access, Config } from '../config/types'
 
+import deleteHandler from './requestHandlers/delete'
 import exportHandler from './requestHandlers/export'
+import findHandler from './requestHandlers/find'
 
 const dataExportAccess: Access = ({ req }) => ({
   'user.value': {
@@ -13,16 +15,27 @@ const dataExportAccess: Access = ({ req }) => ({
 const getDataExportsCollection = (config: Config): CollectionConfig => ({
   access: {
     delete: dataExportAccess,
+    create: dataExportAccess,
     read: dataExportAccess,
   },
   admin: {
-    hidden: true,
+    hidden: false,
   },
   endpoints: [
     {
       handler: exportHandler,
       method: 'post',
-      path: '/export',
+      path: '/create',
+    },
+    {
+      handler: findHandler,
+      method: 'get',
+      path: '/:key',
+    },
+    {
+      handler: deleteHandler,
+      method: 'delete',
+      path: '/:key',
     },
   ],
   fields: [
@@ -48,7 +61,7 @@ const getDataExportsCollection = (config: Config): CollectionConfig => ({
       type: 'relationship',
     },
     {
-      name: 'key',
+      name: 'name',
       type: 'text',
     },
     {
