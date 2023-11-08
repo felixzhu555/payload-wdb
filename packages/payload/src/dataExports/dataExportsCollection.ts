@@ -4,7 +4,7 @@ import type { Access, Config } from '../config/types'
 
 import exportHandler from './requestHandlers/export'
 
-const dataExportAcess: Access = ({ req }) => ({
+const dataExportAccess: Access = ({ req }) => ({
   'user.value': {
     equals: req?.user?.id,
   },
@@ -12,8 +12,8 @@ const dataExportAcess: Access = ({ req }) => ({
 
 const getDataExportsCollection = (config: Config): CollectionConfig => ({
   access: {
-    delete: dataExportAcess,
-    read: dataExportAcess,
+    delete: dataExportAccess,
+    read: dataExportAccess,
   },
   admin: {
     hidden: true,
