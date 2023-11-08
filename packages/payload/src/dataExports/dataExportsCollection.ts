@@ -56,7 +56,7 @@ const getDataExportsCollection = (config: Config): CollectionConfig => ({
       type: 'json',
     },
   ],
-  slug: 'payload-preferences',
+  slug: 'payload-dataExports', //payload-preferences for getPreferencesCollection
   upload: true,
 })
 
