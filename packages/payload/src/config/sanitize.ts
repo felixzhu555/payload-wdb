@@ -10,6 +10,7 @@ import type {
 
 import { defaultUserCollection } from '../auth/defaultUser'
 import sanitizeCollection from '../collections/config/sanitize'
+import getDataExportsCollection from '../dataExports/dataExportsCollection'
 import { migrationsCollection } from '../database/migrations/migrationsCollection'
 import { InvalidConfiguration } from '../errors'
 import sanitizeGlobals from '../globals/config/sanitize'
@@ -81,6 +82,9 @@ export const sanitizeConfig = (incomingConfig: Config): SanitizedConfig => {
   }
 
   configWithDefaults.collections.push(getPreferencesCollection(configWithDefaults))
+
+  configWithDefaults.collections.push(getDataExportsCollection(configWithDefaults))
+
   configWithDefaults.collections.push(migrationsCollection)
 
   config.collections = config.collections.map((collection) =>

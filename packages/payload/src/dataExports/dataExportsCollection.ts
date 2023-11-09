@@ -3,6 +3,7 @@ import type { CollectionConfig } from '../collections/config/types'
 import type { Access, Config } from '../config/types'
 
 import exportHandler from './requestHandlers/export'
+import statusHandler from './requestHandlers/status'
 
 const dataExportAccess: Access = ({ req }) => ({
   'user.value': {
@@ -16,13 +17,18 @@ const getDataExportsCollection = (config: Config): CollectionConfig => ({
     read: dataExportAccess,
   },
   admin: {
-    hidden: true,
+    hidden: false,
   },
   endpoints: [
     {
       handler: exportHandler,
       method: 'post',
       path: '/export',
+    },
+    {
+      handler: statusHandler,
+      method: 'get',
+      path: '/status/:id',
     },
   ],
   fields: [
@@ -48,12 +54,16 @@ const getDataExportsCollection = (config: Config): CollectionConfig => ({
       type: 'relationship',
     },
     {
-      name: 'key',
+      name: 'status',
       type: 'text',
     },
     {
-      name: 'value',
-      type: 'json',
+      name: 'filename',
+      type: 'text',
+    },
+    {
+      name: 'uploads',
+      type: 'text',
     },
   ],
   slug: 'payload-dataExports', //payload-preferences for getPreferencesCollection

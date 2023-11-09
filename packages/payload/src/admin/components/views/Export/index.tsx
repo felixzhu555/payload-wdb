@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import { Collection, SanitizedCollectionConfig } from '../../../../exports/types'
-import { useConfig } from '../../utilities/Config'
 import { useTranslation } from 'react-i18next'
+
+import type { Collection } from '../../../../exports/types'
+
+import { SanitizedCollectionConfig } from '../../../../exports/types'
+import { useConfig } from '../../utilities/Config'
 
 type ExportType = {
   collections: Array<Collection>
@@ -16,8 +19,8 @@ const Export = () => {
     //    which is what should be rendered in the list
     collections,
     globals,
-    serverURL,
     routes: { admin, api },
+    serverURL,
   } = useConfig()
   const { i18n } = useTranslation('general')
   const [data, setData] = useState<ExportType>()
@@ -25,6 +28,7 @@ const Export = () => {
   const exportData = () => {
     // TODO: not finished
     collections.forEach((collection) => {
+      console.log(collection.slug)
       ;(async function () {
         const data = await fetch(`${serverURL}${api}/${collection.slug}`, {
           credentials: 'include',
@@ -52,11 +56,15 @@ const Export = () => {
   useEffect(() => {
     // exportData()
     ;(async function () {
-      const data = await fetch(`${serverURL}/export`, {
+      const data = await fetch(`${serverURL}/api/export`, {
+        body: {
+          collections: ['users', 'posts'],
+        },
         credentials: 'include',
         headers: {
           'Accept-Language': i18n.language,
         },
+        method: 'POST',
       })
       return await data.json()
     })()
@@ -69,15 +77,15 @@ const Export = () => {
   }, [])
 
   return (
-    <>
+    <React.Fragment>
       LIST:
       {collections.map((collection) => (
-        <>
+        <React.Fragment>
           <br />
           Collection name: {collection.slug}
-        </>
+        </React.Fragment>
       ))}
-    </>
+    </React.Fragment>
   )
 }
 

@@ -8,13 +8,13 @@ import type { PayloadRequest } from '../../express/types'
 import type { Where } from '../../types'
 
 import { isNumber } from '../../utilities/isNumber'
-import exportOperation from '../operations/export'
+import statusOperation from '../operations/status'
 // import exportFunc from '../operations/export'
 
 // API ROUTE: http://localhost:3000/export , returns {}
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export default async function exportHandler<T extends TypeWithID = any>(
+export default async function statusHandler<T extends TypeWithID = any>(
   req: PayloadRequest,
   res: Response,
   next: NextFunction,
@@ -23,7 +23,7 @@ export default async function exportHandler<T extends TypeWithID = any>(
     console.log('working...')
 
     // Call and return operations
-    const data = await exportOperation({
+    const data = await statusOperation({
       req: req,
       user: req.user,
     })
