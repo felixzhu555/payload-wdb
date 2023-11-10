@@ -9,10 +9,6 @@ import type { Where } from '../../types'
 
 import { isNumber } from '../../utilities/isNumber'
 import statusOperation from '../operations/status'
-// import exportFunc from '../operations/export'
-
-// API ROUTE: http://localhost:3000/export , returns {}
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default async function statusHandler<T extends TypeWithID = any>(
   req: PayloadRequest,

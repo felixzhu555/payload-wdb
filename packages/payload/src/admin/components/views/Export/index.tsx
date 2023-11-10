@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import type { Collection } from '../../../../exports/types'
 
 import { SanitizedCollectionConfig } from '../../../../exports/types'
+import { useAuth } from '../../utilities/Auth'
 import { useConfig } from '../../utilities/Config'
 
 type ExportType = {
@@ -11,6 +12,7 @@ type ExportType = {
 }
 
 const Export = () => {
+  const { permissions, user } = useAuth()
   const {
     admin: {
       components: { afterNavLinks, beforeNavLinks },
@@ -65,6 +67,7 @@ const Export = () => {
           'Accept-Language': i18n.language,
         },
         method: 'POST',
+        user,
       })
       return await data.json()
     })()

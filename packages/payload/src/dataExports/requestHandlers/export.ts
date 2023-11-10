@@ -1,5 +1,6 @@
 import type { NextFunction, Response } from 'express'
 
+import fs from 'fs'
 import httpStatus from 'http-status'
 
 import type { TypeWithID } from '../../collections/config/types'
@@ -20,16 +21,18 @@ export default async function exportHandler<T extends TypeWithID = any>(
   next: NextFunction,
 ): Promise<Response<PaginatedDocs<T>> | void> {
   try {
-    console.log('working...')
+    // console.log('working...')
 
     // Call and return operations
     const data = await exportOperation({
       req: req,
+      res: res,
       user: req.user,
     })
-
+    // console.log('HERE inside export')
     return res.status(200).json(data)
   } catch (error) {
+    console.log(error)
     return next(error)
   }
 }

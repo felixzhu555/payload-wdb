@@ -11,6 +11,8 @@ import initAuth from './auth/init'
 import access from './auth/requestHandlers/access'
 import { getDataLoader } from './collections/dataloader'
 import initCollectionsHTTP from './collections/initHTTP'
+import exportHandler from './dataExports/requestHandlers/export'
+import statusHandler from './dataExports/requestHandlers/status'
 import initAdmin from './express/admin'
 import expressMiddleware from './express/middleware'
 import authenticate from './express/middleware/authenticate'
@@ -22,7 +24,6 @@ import initGlobalsHTTP from './globals/initHTTP'
 import graphQLHandler from './graphql/graphQLHandler'
 import initGraphQLPlayground from './graphql/initPlayground'
 import { getPayload } from './payload'
-import exportHandler from './collections/requestHandlers/export'
 
 export const initHTTP = async (incomingOptions: InitOptions): Promise<Payload> => {
   const options = { ...incomingOptions }
@@ -79,7 +80,8 @@ export const initHTTP = async (incomingOptions: InitOptions): Promise<Payload> =
 
     // Add export endpoint
     const newEndpoints = payload.config.endpoints
-    newEndpoints.push({ handler: exportHandler, method: 'get', path: '/export', root: true })
+    newEndpoints.push({ handler: exportHandler, method: 'post', path: '/api/export', root: true })
+    // newEndpoints.push({ handler: statusHandler, method: 'get', path: '/api/export/:id', root: true })
 
     mountEndpoints(options.express, payload.router, newEndpoints)
 

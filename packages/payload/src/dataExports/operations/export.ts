@@ -1,5 +1,3 @@
-import fs from 'fs'
-
 import defaultAccess from '../../auth/defaultAccess'
 import executeAccess from '../../auth/executeAccess'
 import UnauthorizedError from '../../errors/UnathorizedError'
@@ -9,17 +7,18 @@ async function exportOperation(args): Promise<Collection> {
     overrideAccess,
     req: { payload },
     req,
+    res,
     user,
   } = args
 
-  if (!user) {
-    throw new UnauthorizedError(req.t)
-  }
+  // if (!user) {
+  //   throw new UnauthorizedError(req.t)
+  // }
 
-  if (!overrideAccess) {
-    await executeAccess({ req }, defaultAccess)
-  }
-
+  // if (!overrideAccess) {
+  //   await executeAccess({ req }, defaultAccess)
+  // }
+  console.log('INSIDE EXPORT OPERATION')
   async function findData(id: string) {
     // 1. Call find for each collection
     // TODO: filter/search for matching collections in req.collections (passed in by frontend)
@@ -50,9 +49,10 @@ async function exportOperation(args): Promise<Collection> {
       outputJSON[collections[collection].config.slug] = collectionData
     }
 
+    console.log('outputJSON', outputJSON)
     // update export obj
     const fileName = '' // TODO: filename of stream
-    payload.updateByID({
+    payload.update({
       id: id,
       collection: 'payload-dataExports',
       data: {
@@ -61,10 +61,7 @@ async function exportOperation(args): Promise<Collection> {
       },
     })
 
-    // return stream
-
     // const filePath = 'data.json' // File path to save the JSON data
-
     // const saveJSONToFile = async () => {
     //   try {
     //     await fs.writeFile(filePath, JSON.stringify(outputJSON, null, 2), () => null)
@@ -74,14 +71,18 @@ async function exportOperation(args): Promise<Collection> {
     //   }
     // }
 
-    // saveJSONToFile()
+    // try {
+    //   saveJSONToFile()
 
-    // const filestream = fs.createReadStream(filePath)
-    // filestream.pipe(req)
+    //   const filestream = fs.createReadStream(filePath)
+    //   filestream.pipe(res)
 
-    // filestream.on('error', function (error) {
-    //   console.error('Error serving the file:', error)
-    // })
+    //   filestream.on('error', function (error) {
+    //     console.error('Error serving the file:', error)
+    //   })
+    // } catch (err) {
+    //   console.log(err)
+    // }
 
     return outputJSON
   }
@@ -91,9 +92,10 @@ async function exportOperation(args): Promise<Collection> {
     data: {
       filename: '',
       status: 'inprogress',
-      uploads: true,
+      uploads: false,
     },
-    user,
+    req: req,
+    user: user,
   })
 
   const objId = result.id

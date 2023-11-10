@@ -32,27 +32,27 @@ const getDataExportsCollection = (config: Config): CollectionConfig => ({
     },
   ],
   fields: [
-    {
-      name: 'user',
-      hooks: {
-        beforeValidate: [
-          ({ req }) => {
-            if (!req?.user) {
-              return null
-            }
-            return {
-              relationTo: req?.user.collection,
-              value: req?.user.id,
-            }
-          },
-        ],
-      },
-      relationTo: config.collections
-        .filter((collectionConfig) => collectionConfig.auth)
-        .map((collectionConfig) => collectionConfig.slug),
-      required: true,
-      type: 'relationship',
-    },
+    // {
+    //   name: 'user',
+    //   hooks: {
+    //     beforeValidate: [
+    //       ({ req }) => {
+    //         if (!req?.user) {
+    //           return null
+    //         }
+    //         return {
+    //           relationTo: req?.user.collection,
+    //           value: req?.user.id,
+    //         }
+    //       },
+    //     ],
+    //   },
+    //   relationTo: config.collections
+    //     .filter((collectionConfig) => collectionConfig.auth)
+    //     .map((collectionConfig) => collectionConfig.slug),
+    //   required: true,
+    //   type: 'relationship',
+    // },
     {
       name: 'status',
       type: 'text',
