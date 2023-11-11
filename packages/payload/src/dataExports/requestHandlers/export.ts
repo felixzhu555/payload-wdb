@@ -21,15 +21,15 @@ export default async function exportHandler<T extends TypeWithID = any>(
   next: NextFunction,
 ): Promise<Response<PaginatedDocs<T>> | void> {
   try {
-    // console.log('working...')
+    console.log('working...')
 
-    // Call and return operations
-    const data = await exportOperation({
+    const data = req.payload.create({
+      collection: 'data-exports',
+      data: {},
       req: req,
-      res: res,
       user: req.user,
     })
-    // console.log('HERE inside export')
+
     return res.status(200).json(data)
   } catch (error) {
     console.log(error)

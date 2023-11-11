@@ -11,14 +11,11 @@ import initAuth from './auth/init'
 import access from './auth/requestHandlers/access'
 import { getDataLoader } from './collections/dataloader'
 import initCollectionsHTTP from './collections/initHTTP'
-import exportHandler from './dataExports/requestHandlers/export'
-import statusHandler from './dataExports/requestHandlers/status'
 import initAdmin from './express/admin'
 import expressMiddleware from './express/middleware'
 import authenticate from './express/middleware/authenticate'
 import errorHandler from './express/middleware/errorHandler'
 import identifyAPI from './express/middleware/identifyAPI'
-import mountEndpoints from './express/mountEndpoints'
 import initStatic from './express/static'
 import initGlobalsHTTP from './globals/initHTTP'
 import graphQLHandler from './graphql/graphQLHandler'
@@ -77,13 +74,6 @@ export const initHTTP = async (incomingOptions: InitOptions): Promise<Payload> =
       )
       initGraphQLPlayground(payload)
     }
-
-    // Add export endpoint
-    const newEndpoints = payload.config.endpoints
-    newEndpoints.push({ handler: exportHandler, method: 'post', path: '/api/export', root: true })
-    // newEndpoints.push({ handler: statusHandler, method: 'get', path: '/api/export/:id', root: true })
-
-    mountEndpoints(options.express, payload.router, newEndpoints)
 
     // Bind router to API
     payload.express.use(payload.config.routes.api, payload.router)

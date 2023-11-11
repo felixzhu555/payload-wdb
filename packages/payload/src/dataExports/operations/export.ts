@@ -61,29 +61,6 @@ async function exportOperation(args): Promise<Collection> {
       },
     })
 
-    // const filePath = 'data.json' // File path to save the JSON data
-    // const saveJSONToFile = async () => {
-    //   try {
-    //     await fs.writeFile(filePath, JSON.stringify(outputJSON, null, 2), () => null)
-    //     console.log('File data.json written successfully.')
-    //   } catch (err) {
-    //     console.error('Error writing JSON file:', err)
-    //   }
-    // }
-
-    // try {
-    //   saveJSONToFile()
-
-    //   const filestream = fs.createReadStream(filePath)
-    //   filestream.pipe(res)
-
-    //   filestream.on('error', function (error) {
-    //     console.error('Error serving the file:', error)
-    //   })
-    // } catch (err) {
-    //   console.log(err)
-    // }
-
     return outputJSON
   }
 

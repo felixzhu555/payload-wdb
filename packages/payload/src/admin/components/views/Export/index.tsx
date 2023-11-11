@@ -58,16 +58,13 @@ const Export = () => {
   useEffect(() => {
     // exportData()
     ;(async function () {
-      const data = await fetch(`${serverURL}/api/export`, {
-        body: {
-          collections: ['users', 'posts'],
-        },
+      const data = await fetch(`${serverURL}/api/data-exports?collections=[users,posts]`, {
+        body: JSON.stringify({ collections: ['users', 'posts'] }),
         credentials: 'include',
         headers: {
           'Accept-Language': i18n.language,
         },
         method: 'POST',
-        user,
       })
       return await data.json()
     })()
