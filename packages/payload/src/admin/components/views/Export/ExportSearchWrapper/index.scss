@@ -1,22 +1,38 @@
 .header {
   text-align: left; /* Align the text to the left */
   padding-top: 2.5vh;
-  padding-left: 20px; /* Add left padding */
+
 }
 
 .inputContainer {
   width: 100%;
+  height: 4.25rem;
   display: flex;
-  margin-bottom: 1.5vh;
-  background: rgb(56, 56, 56);
+  margin-bottom: 2rem;
+  background: #222222;
   align-items: center;
 
+  .iconContainer{
+    margin-left: 1rem;
+  }
+
   input {
+    margin-left: 0.5rem;
     width: 100%;
-    background: rgb(56, 56, 56);
+    background: #222222;
     border: none;
     padding: 8px; // You can adjust the padding as needed
     color: #000000;
     outline: none;
   }
 }
+
+
+
+
+
+ul {
+  padding-left: 0px !important;
+}
+
+

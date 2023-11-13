@@ -67,9 +67,11 @@ const ExportSearchWrapper = (props) => {
     }
   }
   return (
-    <div>
+    <div className="mainContainer">
       <div className="inputContainer">
-        <WhiteSearchIcon />
+        <div className="iconContainer">
+          <WhiteSearchIcon />
+        </div>
         <input
           onChange={(e) => handleSearch(e.target.value)}
           placeholder="Search by Title"
@@ -80,7 +82,7 @@ const ExportSearchWrapper = (props) => {
 
       <div>
         {searchResults.length > 0 ? (
-          <div>
+          <div className="listContainer">
             <ul>
               {searchResults.map((name, index) => (
                 <ExportCell

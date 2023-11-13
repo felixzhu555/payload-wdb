@@ -2,10 +2,10 @@
 
 /* Style for the ExportList component */
 .export-list-container {
-  width: 90%;
+  width: 80vw;
   background-color: rgb(0, 0, 0);
-  margin-left: 5vw;
-  margin-right: 5vw;
+  margin-left: 10vw;
+  margin-right: 10vw;
 
   /* Additional style for the header */
   .header {
@@ -15,6 +15,8 @@
       font-size: 3em; /* You can adjust the size as needed */
   }
 }
+
+
 
 ul {
   padding-bottom: 10px; /* Adjust the padding value as needed */

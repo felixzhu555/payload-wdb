@@ -3,25 +3,25 @@
   justify-content: space-between; /* Adjust alignment as needed */
   align-items: center;
   flex-direction: row;
-  border: 1px solid #ccc;
-  margin: 10px;
+  border: 1px solid #3C3C3C;
   cursor: pointer;
   position: relative;
 }
 
-.checkbox-cell {
-  height: 100%; /* Cover 100% of the height */
-  width: 3%; /* Adjust the width as needed */
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.exportCell:nth-of-type(even) {
+  background-color: #3C3C3C;
 }
 
+.exportCell:nth-of-type(odd) {
+  background-color: #222222;
+}
+
+
 .dropdown-cell {
-  width: 97%; /* Adjust the width as needed */
-  height: 100%; /* Cover 100% of the height */
+  width: 100%; /* Adjust the width as needed */
+  height: 4rem; /* Cover 100% of the height */
+  padding-left: 1rem;
   display: flex;
-  justify-content: center;
   align-items: center;
   position: relative;
   overflow: hidden; /* Ensure content doesn't overflow */
@@ -35,9 +35,8 @@
   justify-content: center;
   align-items: center;
   flex-direction: row;
-  border: 1px solid #ccc;
-  margin: 1vh;
-  margin-left: 2.5vw;
+  border: 1px solid #3C3C3C;
+  margin-left: 4rem;
   cursor: pointer;
   position: relative;
 }
@@ -55,9 +54,48 @@
 
 .collection-name,
 .collection-version {
-  margin: 0 10px;
-  font-weight: bold;
 }
 
+/* Add your existing styles */
+
 .collection-checkbox {
+  /* Hide the default checkbox */
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+  /* Customize the checkbox appearance */
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid #3C3C3C;
+  cursor: pointer;
+  position: relative;
+  line-height: 20px;
+  vertical-align: middle;
+  margin-left: 1.5rem;
+
+  /* Checked state styles */
+  &:checked {
+    background-color: #4CAF50;
+    border-color: #4CAF50;
+
+    /* Add a checkmark when the checkbox is checked */
+    &::before {
+      content: '\2713'; /* Unicode checkmark character */
+      font-size: 14px;
+      color: #fff; /* Color of the checkmark */
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+  }
 }
+
+/* Optionally, style the checkmark inside the checkbox */
+.checkmark {
+  display: inline-block;
+  margin-left: 5px;
+  color: #333; /* Color of the checkmark */
+}
+

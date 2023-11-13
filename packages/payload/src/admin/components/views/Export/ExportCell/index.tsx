@@ -42,7 +42,7 @@ const ExportCell = (props) => {
   }
 
   return (
-    <div>
+    <div className="exportCell">
       <div className="collection-cell">
         <div className="checkbox-cell">
           <input
