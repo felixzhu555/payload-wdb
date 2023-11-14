@@ -66,14 +66,48 @@ const Export = () => {
         },
         method: 'POST',
       })
-      return await data.json()
+      async function downloadFromStream(stream) {
+        // Convert the ReadableStream into a Blob
+        const blob = await new Response(stream).blob()
+
+        // Create a URL for the Blob
+        const url = URL.createObjectURL(blob)
+
+        // Create a temporary anchor element
+        const a = document.createElement('a')
+        a.href = url
+
+        // Set a filename for the downloaded file
+        a.download = 'downloaded_file.json' // You can change the filename here
+
+        // Append the anchor to the document
+        document.body.appendChild(a)
+
+        // Trigger the download
+        a.click()
+
+        // Clean up by revoking the URL and removing the anchor element
+        URL.revokeObjectURL(url)
+        document.body.removeChild(a)
+      }
+      downloadFromStream(data.body)
     })()
-      .then((res) => {
-        console.log(res)
-      })
-      .catch((e) => {
-        console.log(e)
-      })
+    // .then((res) => {
+    //   console.log(res)
+    //   console.log('getting stuff')
+    //   const data1 = fetch(`${serverURL}/api/data-exports/` + res.doc.id, {
+    //     credentials: 'include',
+    //     headers: {
+    //       'Accept-Language': i18n.language,
+    //     },
+    //     method: 'GET',
+    //   }).then((r) => {
+    //     console.log(r)
+    //   })
+    // })
+    // .catch((e) => {
+    //   console.log(e)
+    // })
   }, [])
 
   return (

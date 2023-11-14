@@ -7,26 +7,22 @@ import exportHandler from './requestHandlers/export'
 import statusHandler from './requestHandlers/status'
 
 async function findData(req: PayloadRequest) {
-  // 1. Call find for each collection
-  // TODO: filter/search for matching collections in req.collections (passed in by frontend)
   const serverURL = req.payload.config.serverURL
   const api = req.payload.config.routes.api
   const collections = req.payload.collections
   const i18n = req.i18n
   const outputJSON = {}
 
-  console.log('bet:', typeof req.query['collections'])
+  // console.log('request: ', req.body, req)
   let checkedCollections = req.query['collections']
   checkedCollections = (checkedCollections as string).substring(
     1,
     (checkedCollections as string).length - 1,
   )
   const checkedCollectionsArr = checkedCollections.split(',')
-  console.log('c', checkedCollectionsArr)
 
   for (const idx in checkedCollectionsArr) {
     const collectionSlug = checkedCollectionsArr[idx]
-    console.log('getting', collectionSlug)
     const collectionData = await req.payload.find({ collection: collectionSlug, limit: 1000 })
 
     let hasNextPage = collectionData.hasNextPage
@@ -45,7 +41,7 @@ async function findData(req: PayloadRequest) {
     outputJSON[collectionSlug] = collectionData
   }
 
-  console.log('outputJSON', outputJSON)
+  // console.log('outputJSON', outputJSON)
 
   return outputJSON
 }
@@ -54,6 +50,13 @@ const getDataExportsCollection: CollectionConfig = {
   admin: {
     useAsTitle: 'createdAt',
   },
+  endpoints: [
+    {
+      handler: statusHandler,
+      method: 'get',
+      path: '/:id',
+    },
+  ],
   fields: [
     {
       name: 'file',
@@ -87,7 +90,7 @@ const getDataExportsCollection: CollectionConfig = {
               collection: 'backup',
               data: {},
               file: {
-                name: 'test.json',
+                name: 'test.json', // eventually set to timestamp
                 data: buffer,
                 mimetype: 'application/json',
                 size: buffer.byteLength,
@@ -105,10 +108,10 @@ const getDataExportsCollection: CollectionConfig = {
                 req: args.req,
               })
             })
-          console.log('returning buffer')
+          console.log('returning buffer1')
           // update this created export with the relationship to the file
 
-          return result
+          return data
         }
       },
     ],

@@ -8,7 +8,6 @@ import type { PayloadRequest } from '../../express/types'
 import type { Where } from '../../types'
 
 import { isNumber } from '../../utilities/isNumber'
-import statusOperation from '../operations/status'
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default async function statusHandler<T extends TypeWithID = any>(
   req: PayloadRequest,
@@ -18,13 +17,17 @@ export default async function statusHandler<T extends TypeWithID = any>(
   try {
     console.log('working...')
 
-    // Call and return operations
-    const data = await statusOperation({
+    const obj = await req.payload.findByID({
+      id: req.params.id,
+      collection: 'data-exports',
       req: req,
-      user: req.user,
     })
 
-    return res.status(200).json(data)
+    if (obj['file'] && obj['file']['filename']) {
+      return res.status(200).send({ status: 'done!' })
+    }
+
+    return res.status(200).send({ status: 'waiting' }) // you can pass json object as param in .send() and will download .json via stream with contents of object
   } catch (error) {
     return next(error)
   }
