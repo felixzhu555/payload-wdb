@@ -2,76 +2,60 @@ import React, { useState } from 'react'
 import { select } from '../../../../../fields/validations'
 import './index.scss'
 
+// ... (imports and other code)
+
 const ExportCell = (props) => {
-  const { name, slug, versions, onSelectionChange } = props
+  const { name, versions, onSelectionChange, onCollectionChange, selection, color } = props
   const [isOpen, setIsOpen] = useState(false)
-  const [isSelected, setIsSelected] = useState(false)
-  const [selectedVersions, setSelectedVersions] = useState({ [slug]: [] })
 
-  const toggleCollection = () => {
-    setIsSelected(!isSelected)
-    setSelectedVersions((prevSelectedVersions) => {
-      const updatedVersions = prevSelectedVersions
-      if (!isSelected) {
-        updatedVersions[slug] = versions
-      } else {
-        updatedVersions[slug] = []
-      }
-      onSelectionChange(updatedVersions)
-      return updatedVersions
-    })
-    // This line should be outside of setSelectedVersions
-  }
-
-  const toggleVersion = (version) => {
-    setSelectedVersions((prevSelectedVersions) => {
-      const updatedVersions = prevSelectedVersions
-      if (updatedVersions[slug].includes(version)) {
-        updatedVersions[slug] = updatedVersions[slug].filter((v) => v !== version)
-      } else {
-        updatedVersions[slug].push(version)
-      }
-      onSelectionChange(updatedVersions)
-      if (Object.keys(updatedVersions[slug]).length === 0) {
-        setIsSelected(false)
-      } else {
-        setIsSelected(true)
-      }
-      return updatedVersions
-    })
-  }
+  const totalVersionCount = versions.length
 
   return (
-    <div className="exportCell">
-      <div className="collection-cell">
-        <div className="checkbox-cell">
-          <input
-            checked={isSelected}
-            className="collection-checkbox"
-            onChange={toggleCollection} // Handle collection checkbox change
-            type="checkbox"
-          />
-        </div>
-        <div className="dropdown-cell" onClick={() => setIsOpen(!isOpen)}>
-          <span className="collection-name">{name}</span>
-        </div>
-      </div>
-      {isOpen &&
-        versions.map((version) => (
-          <div className="version-cell" key={version}>
+    <div className="cell-container">
+      <div className="mainContainer">
+        <div className={`exportCell ${color}`}>
+          <div className="collection-cell">
             <div className="checkbox-cell">
               <input
-                checked={selectedVersions[slug].includes(version)}
+                checked={selection && selection.length > 0}
                 className="collection-checkbox"
-                onChange={() => toggleVersion(version)} // Handle version checkbox change
+                onChange={() => onCollectionChange(name, versions)} // Handle collection checkbox change
                 type="checkbox"
               />
             </div>
-            <div className="dropdown-cell">
-              <span className="collection-version">{version}</span>
+            <div
+              className={`dropdown-cell ${isOpen ? 'open' : ''}`}
+              onClick={() => setIsOpen(!isOpen)}
+            >
+              <div className="collection-name-container">
+                <span className="collection-name">{name}</span>
+                <span>&nbsp;</span>
+                <span>{'(' + totalVersionCount + ')'}</span>
+              </div>
+              <div className="total-version-count"></div>
+              <div className="arrow-container">
+                <span className={`arrow ${isOpen ? 'up' : 'down'}`}></span>
+              </div>
             </div>
           </div>
-        ))}
+        </div>
+        {isOpen &&
+          versions.map((version) => (
+            <div className={`version-cell ${color}`} key={version}>
+              <div className="checkbox-cell">
+                <input
+                  checked={selection.includes(version)}
+                  className="collection-checkbox"
+                  onChange={() => onSelectionChange(name, version)} // Handle version checkbox change
+                  type="checkbox"
+                />
+              </div>
+              <div className="dropdown-cell">
+                <span className="collection-version">{'Version ' + version}</span>
+              </div>
+            </div>
+          ))}
+      </div>
     </div>
   )
 }

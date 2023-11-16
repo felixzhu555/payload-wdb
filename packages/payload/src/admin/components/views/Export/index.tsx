@@ -16,16 +16,12 @@ const Export = () => {
     admin: {
       components: { afterNavLinks, beforeNavLinks },
     },
-    // collections is a list of collectionConfigs,
-    //    which is what should be rendered in the list
     collections,
     globals,
     routes: { admin, api },
     serverURL,
   } = useConfig()
   const { i18n } = useTranslation('general')
-  const [data, setData] = useState<ExportType>()
-
   const [collectionsDict, setCollectionsDict] = useState({})
   const [dataFromChild, setDataFromChild] = useState(null)
 
@@ -34,45 +30,65 @@ const Export = () => {
     setDataFromChild(data)
   }
 
-  const exportData = () => {
-    // TODO: not finished
-    collections.forEach((collection) => {
-      ;(async function () {
-        const data = await fetch(`${serverURL}${api}/${collection.slug}`, {
+  const generateRandomVersions = (count) => {
+    const randomVersions = []
+    const generateUniqueVersion = () => {
+      const version = `${Math.floor(Math.random() * 10)}.${Math.floor(Math.random() * 10)}`
+      return randomVersions.includes(version) ? generateUniqueVersion() : version
+    }
+    for (let i = 1; i <= count; i++) {
+      const uniqueVersion = generateUniqueVersion()
+      randomVersions.push(uniqueVersion)
+    }
+    return randomVersions.sort((a, b) => parseFloat(a) - parseFloat(b))
+  }
+
+  function getRandomCountWithDistribution() {
+    const randomNumber = Math.floor(Math.random() * 100) + 1
+    if (randomNumber <= 10) {
+      return 1 // 10%
+    } else if (randomNumber <= 35) {
+      return 2 // 25%
+    } else if (randomNumber <= 65) {
+      return 3 // 30%
+    } else if (randomNumber <= 85) {
+      return 4 // 20%
+    } else {
+      return 5 // 15%
+    }
+  }
+
+  const exportData = async () => {
+    const newData = {}
+    for (const collection of collections) {
+      try {
+        const response = await fetch(`${serverURL}${api}/${collection.slug}`, {
           credentials: 'include',
           headers: {
             'Accept-Language': i18n.language,
           },
         })
-        return await data.json()
-      })()
-        .then((res) => {
-          console.log(collection.slug, res)
-          // const newData = data || {}
-          // if (newData) {
-          //   newData[collection.slug] = res
-          //   setData(newData)
-          // }
-        })
-        .catch((err) => {
-          console.log(err)
-        })
-    })
+        const data = await response.json()
+        newData[collection.slug] = data
+      } catch (error) {
+        console.error(`Error fetching data for ${collection.slug}:`, error)
+      }
+    }
   }
 
   useEffect(() => {
-    // exportData()
+    exportData()
   }, [])
 
   useEffect(() => {
     const updatedCollectionsDict = {}
-    const dummyVersions = ['1.0', '1.2']
     for (const collection of collections) {
       if (collection.labels && collection.labels.plural) {
         const tempKey = collection.labels.plural
-        let tempBucket = {}
+        const tempBucket = {}
         tempBucket['slug'] = collection.slug
-        tempBucket['versions'] = dummyVersions
+        const randomCount = getRandomCountWithDistribution()
+        tempBucket['versions'] = generateRandomVersions(randomCount) // Change the argument to generate more or fewer versions
         updatedCollectionsDict[tempKey] = tempBucket
       }
     }
@@ -84,7 +100,7 @@ const Export = () => {
       <React.Fragment>
         <div>
           <div>
-            <ExportList collectionsDict={collectionsDict}></ExportList>
+            <ExportList collectionsDict={collectionsDict} onDataChange={handleDataFromChild} />
           </div>
         </div>
       </React.Fragment>

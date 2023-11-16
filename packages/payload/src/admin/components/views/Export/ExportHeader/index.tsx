@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from 'react'
-
-import ExportDropdown from './ExportDropdown'
 import './index.scss'
 
 const ExportHeader = () => {
@@ -8,7 +6,6 @@ const ExportHeader = () => {
     <React.Fragment>
       <div className="header">
         <div className="title">Export</div>
-        <ExportDropdown />
       </div>
     </React.Fragment>
   )
