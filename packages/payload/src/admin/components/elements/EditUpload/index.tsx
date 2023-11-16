@@ -50,13 +50,12 @@ export const EditUpload: React.FC<{
     y: uploadEdits?.focalPoint?.y || 50,
   })
   const [checkBounds, setCheckBounds] = useState<boolean>(false)
+  const [originalHeight, setOriginalHeight] = useState<number>(0)
+  const [originalWidth, setOriginalWidth] = useState<number>(0)
 
   const focalWrapRef = useRef<HTMLDivElement | undefined>()
   const imageRef = useRef<HTMLImageElement | undefined>()
   const cropRef = useRef<HTMLDivElement | undefined>()
-
-  const originalHeight = imageRef.current ? imageRef.current.naturalHeight : 0
-  const originalWidth = imageRef.current ? imageRef.current.naturalWidth : 0
 
   const fineTuneCrop = ({ dimension, value }: { dimension: 'height' | 'width'; value: string }) => {
     const intValue = parseInt(value)
@@ -98,7 +97,9 @@ export const EditUpload: React.FC<{
 
   const centerFocalPoint = () => {
     const containerRect = focalWrapRef.current.getBoundingClientRect()
-    const boundsRect = cropRef.current.getBoundingClientRect()
+    const boundsRect = showCrop
+      ? cropRef.current.getBoundingClientRect()
+      : imageRef.current.getBoundingClientRect()
     const xCenter =
       ((boundsRect.left - containerRect.left + boundsRect.width / 2) / containerRect.width) * 100
     const yCenter =
@@ -152,22 +153,32 @@ export const EditUpload: React.FC<{
                   return <div className={`${baseClass}__crop-window`} ref={cropRef} />
                 }}
               >
-                <img alt={t('upload:setCropArea')} ref={imageRef} src={fileSrcToUse} />
+                <img
+                  alt={t('upload:setCropArea')}
+                  onLoad={(e) => {
+                    setOriginalHeight(e.currentTarget.naturalHeight)
+                    setOriginalWidth(e.currentTarget.naturalWidth)
+                  }}
+                  ref={imageRef}
+                  src={fileSrcToUse}
+                />
               </ReactCrop>
             ) : (
               <img alt={t('upload:setFocalPoint')} ref={imageRef} src={fileSrcToUse} />
             )}
-            <DraggableElement
-              boundsRef={cropRef}
-              checkBounds={checkBounds}
-              className={`${baseClass}__focalPoint`}
-              containerRef={focalWrapRef}
-              initialPosition={pointPosition}
-              onDragEnd={onDragEnd}
-              setCheckBounds={setCheckBounds}
-            >
-              <Plus />
-            </DraggableElement>
+            {showFocalPoint && (
+              <DraggableElement
+                boundsRef={showCrop ? cropRef : imageRef}
+                checkBounds={showCrop ? checkBounds : false}
+                className={`${baseClass}__focalPoint`}
+                containerRef={focalWrapRef}
+                initialPosition={pointPosition}
+                onDragEnd={onDragEnd}
+                setCheckBounds={showCrop ? setCheckBounds : false}
+              >
+                <Plus />
+              </DraggableElement>
+            )}
           </div>
         </div>
         {(showCrop || showFocalPoint) && (

@@ -63,6 +63,7 @@ export type IncomingUploadType = {
   adminThumbnail?: GetAdminThumbnail | string
   crop?: boolean
   disableLocalStorage?: boolean
+  filesRequiredOnCreate?: boolean
   focalPoint?: boolean
   /** Options for original upload file only. For sizes, set each formatOptions individually. */
   formatOptions?: ImageUploadFormatOptions
@@ -80,6 +81,7 @@ export type Upload = {
   adminThumbnail?: GetAdminThumbnail | string
   crop?: boolean
   disableLocalStorage?: boolean
+  filesRequiredOnCreate?: boolean
   focalPoint?: boolean
   formatOptions?: ImageUploadFormatOptions
   handlers?: any[]

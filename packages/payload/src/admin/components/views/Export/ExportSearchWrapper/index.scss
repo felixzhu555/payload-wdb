@@ -1,0 +1,114 @@
+.header {
+  text-align: left; /* Align the text to the left */
+  padding-top: 2.5vh;
+  
+}
+
+.inputContainer {
+  width: 100%;
+  height: 4.25rem;
+  display: flex;
+  margin-bottom: 1.5rem;
+  background: #222222;
+  align-items: center;
+
+  .iconContainer {
+    margin-left: 1rem; /* Adjust the margin as needed */
+    width: 24px; /* Set the width of the container to match the SVG width */
+    height: 24px; /* Set the height of the container to match the SVG height */
+    flex-shrink: 0.5; /* Prevent the container from shrinking */
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"><circle cx="11" cy="11" r="8" /><line x1="22" x2="16.65" y1="22" y2="16.65" /></svg>');
+    background-repeat: no-repeat;
+    background-size: contain; /* Adjust the background size as needed */
+    background-position: center; /* Center the background image */
+    display: flex;
+    align-items: center; /* Center vertically */
+  }
+  
+  input {
+    margin-left: 0.5rem;
+    width: 100%;
+    background: #222222;
+    border: none;
+    padding: 8px; // You can adjust the padding as needed
+    color: #8D8D8D;
+    outline: none;
+  }
+
+  .show-div {
+    display: flex; /* Use flexbox */
+    align-items: center; /* Align items vertically in the center */
+    width: auto;
+  }
+  
+
+  .sortButton,
+  .showAllButton,
+  .showSelectedButton,
+  .showUnselectedButton {
+    height: 2rem;
+    font-size: 1rem;
+    background: #3C3C3C;
+    border: 0px;
+    color: #EBEBEB;
+    cursor: pointer;
+    outline: none;
+    width: auto;
+    white-space: nowrap;
+    margin-right: 1rem;
+  }
+  .sortButton:hover,
+  .showAllButton:hover,
+  .showSelectedButton:hover,
+  .showUnselectedButton:hover {
+    background-color: #434343 !important;
+  }
+
+  .showAllButton.selected,
+  .showSelectedButton.selected,
+  .showUnselectedButton.selected {
+  background-color: #181818; /* Set your desired background color */
+  color: white; /* Set your desired text color */
+}
+}
+
+.selectSelected {
+  background-color: #2f2f2f !important;
+  /* Add any other styles you want for zero selected count */
+}
+
+.alertcontainer {
+  display: flex;
+  margin-bottom: 1.25rem;
+
+  .selectedVersionsCount {
+    /* Additional styling for selectedVersionsCount if needed */
+  }
+
+  .buttonsContainer {
+    margin-left: auto; /* Align buttons to the right */
+    display: flex;
+  }
+
+  button {
+    height: 2rem;
+    font-size: 1rem;
+    background: #222222;
+    border: 0px;
+    margin-left: 1rem; /* Add margin to separate buttons */
+  }
+
+  button:hover {
+    background: #3C3C3C;
+  }
+}
+
+
+
+
+
+ul {
+  padding-left: 0px !important;
+}
+
+

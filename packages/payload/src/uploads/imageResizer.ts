@@ -1,4 +1,5 @@
 import type { UploadedFile } from 'express-fileupload'
+import type { OutputInfo } from 'sharp'
 
 import { fromBuffer } from 'file-type'
 import fs from 'fs'
@@ -65,7 +66,7 @@ const getSanitizedImageData = (sourceImage: string): SanitizedImageData => {
  */
 const createImageName = (
   outputImageName: string,
-  { height, width }: sharp.OutputInfo,
+  { height, width }: OutputInfo,
   extension: string,
 ) => `${outputImageName}-${width}x${height}.${extension}`
 
@@ -217,11 +218,11 @@ export default async function resizeAndTransformImageSizes({
           const maxOffsetX = Math.max(info.width - width, 0)
           const maxOffsetY = Math.max(info.height - height, 0)
 
-          const focalPointX = Math.floor(info.width * focalPoint.x - width / 2)
-          const focalPointY = Math.floor(info.height * focalPoint.y - height / 2)
+          const focalPointX = Math.floor((info.width / 100) * focalPoint.x)
+          const focalPointY = Math.floor((info.height / 100) * focalPoint.y)
 
-          const offsetX = Math.min(Math.max(focalPointX, 0), maxOffsetX)
-          const offsetY = Math.min(Math.max(focalPointY, 0), maxOffsetY)
+          const offsetX = Math.min(Math.max(focalPointX - width / 2, 0), maxOffsetX)
+          const offsetY = Math.min(Math.max(focalPointY - height / 2, 0), maxOffsetY)
 
           resized = resized.extract({
             height,

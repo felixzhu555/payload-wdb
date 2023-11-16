@@ -1,6 +1,6 @@
 import React from 'react'
 
-import type { LivePreviewToolbarProps } from '..'
+import type { EditViewProps } from '../../../types'
 
 import { X } from '../../../..'
 import { ExternalLinkIcon } from '../../../../graphics/ExternalLink'
@@ -10,19 +10,16 @@ import './index.scss'
 
 const baseClass = 'live-preview-toolbar-controls'
 
-export const ToolbarControls: React.FC<LivePreviewToolbarProps> = (props) => {
-  const { breakpoint, breakpoints, setBreakpoint, setZoom, zoom } = useLivePreviewContext()
-
-  const {
-    popupState: { openPopupWindow },
-    url,
-  } = props
+export const ToolbarControls: React.FC<EditViewProps> = () => {
+  const { breakpoint, breakpoints, setBreakpoint, setPreviewWindowType, setZoom, url, zoom } =
+    useLivePreviewContext()
 
   return (
     <div className={baseClass}>
       {breakpoints?.length > 0 && (
         <select
           className={`${baseClass}__breakpoint`}
+          name="live-preview-breakpoint"
           onChange={(e) => setBreakpoint(e.target.value)}
           value={breakpoint}
         >
@@ -57,7 +54,15 @@ export const ToolbarControls: React.FC<LivePreviewToolbarProps> = (props) => {
         <option value={150}>150%</option>
         <option value={200}>200%</option>
       </select>
-      <a className={`${baseClass}__external`} href={url} onClick={openPopupWindow} type="button">
+      <a
+        className={`${baseClass}__external`}
+        href={url}
+        onClick={(e) => {
+          e.preventDefault()
+          setPreviewWindowType('popup')
+        }}
+        type="button"
+      >
         <ExternalLinkIcon />
       </a>
     </div>
