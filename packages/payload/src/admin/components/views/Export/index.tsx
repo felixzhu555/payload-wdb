@@ -17,8 +17,6 @@ const Export = () => {
     admin: {
       components: { afterNavLinks, beforeNavLinks },
     },
-    // collections is a list of collectionConfigs,
-    //    which is what should be rendered in the list
     collections,
     globals,
     routes: { admin, api },
@@ -43,11 +41,6 @@ const Export = () => {
       })()
         .then((res) => {
           console.log(collection.slug, res)
-          // const newData = data || {}
-          // if (newData) {
-          //   newData[collection.slug] = res
-          //   setData(newData)
-          // }
         })
         .catch((err) => {
           console.log(err)
@@ -58,14 +51,16 @@ const Export = () => {
   useEffect(() => {
     // exportData()
     ;(async function () {
-      const data = await fetch(`${serverURL}/api/data-exports?collections=[users,posts]`, {
-        body: JSON.stringify({ collections: ['users', 'posts'] }),
-        credentials: 'include',
-        headers: {
-          'Accept-Language': i18n.language,
+      const data = await fetch(
+        `${serverURL}/api/data-exports?collections={"users": ["1.1", "1.2"], "posts": ["1.1"]}`,
+        {
+          credentials: 'include',
+          headers: {
+            'Accept-Language': i18n.language,
+          },
+          method: 'POST',
         },
-        method: 'POST',
-      })
+      )
       async function downloadFromStream(stream) {
         // Convert the ReadableStream into a Blob
         const blob = await new Response(stream).blob()
@@ -78,7 +73,9 @@ const Export = () => {
         a.href = url
 
         // Set a filename for the downloaded file
-        a.download = 'downloaded_file.json' // You can change the filename here
+        const currentDateTime = new Date()
+        const dateTimeString = currentDateTime.toString()
+        a.download = dateTimeString + '.json'
 
         // Append the anchor to the document
         document.body.appendChild(a)
@@ -91,23 +88,9 @@ const Export = () => {
         document.body.removeChild(a)
       }
       downloadFromStream(data.body)
+      const newData = await data.body
+      console.log(data.body)
     })()
-    // .then((res) => {
-    //   console.log(res)
-    //   console.log('getting stuff')
-    //   const data1 = fetch(`${serverURL}/api/data-exports/` + res.doc.id, {
-    //     credentials: 'include',
-    //     headers: {
-    //       'Accept-Language': i18n.language,
-    //     },
-    //     method: 'GET',
-    //   }).then((r) => {
-    //     console.log(r)
-    //   })
-    // })
-    // .catch((e) => {
-    //   console.log(e)
-    // })
   }, [])
 
   return (

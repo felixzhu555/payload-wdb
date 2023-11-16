@@ -22,9 +22,9 @@ export default async function statusHandler<T extends TypeWithID = any>(
       collection: 'data-exports',
       req: req,
     })
-
+    console.log('OBJECT', obj['file'])
     if (obj['file'] && obj['file']['filename']) {
-      return res.status(200).send({ status: 'done!' })
+      return res.status(200).send({ file: '', status: 'done!' })
     }
 
     return res.status(200).send({ status: 'waiting' }) // you can pass json object as param in .send() and will download .json via stream with contents of object

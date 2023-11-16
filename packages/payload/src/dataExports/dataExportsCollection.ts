@@ -3,7 +3,6 @@ import type { CollectionConfig } from '../collections/config/types'
 import type { Access, Config } from '../config/types'
 import type { PayloadRequest } from '../express/types'
 
-import exportHandler from './requestHandlers/export'
 import statusHandler from './requestHandlers/status'
 
 async function findData(req: PayloadRequest) {
@@ -13,33 +12,68 @@ async function findData(req: PayloadRequest) {
   const i18n = req.i18n
   const outputJSON = {}
 
-  // console.log('request: ', req.body, req)
-  let checkedCollections = req.query['collections']
-  checkedCollections = (checkedCollections as string).substring(
-    1,
-    (checkedCollections as string).length - 1,
-  )
-  const checkedCollectionsArr = checkedCollections.split(',')
+  console.log('request: ', req.body, req)
 
-  for (const idx in checkedCollectionsArr) {
-    const collectionSlug = checkedCollectionsArr[idx]
-    const collectionData = await req.payload.find({ collection: collectionSlug, limit: 1000 })
+  const checkedCollectionsArr = JSON.parse(req.query['collections'])
+  console.log(checkedCollectionsArr, typeof checkedCollectionsArr)
 
-    let hasNextPage = collectionData.hasNextPage
-    let currPage = collectionData.page
-    while (hasNextPage) {
-      const nextData = await req.payload.find({
+  for (const collectionSlug of Object.keys(checkedCollectionsArr)) {
+    for (const version of checkedCollectionsArr[collectionSlug]) {
+      const collectionData = await req.payload.find({
         collection: collectionSlug,
         limit: 1000,
-        page: currPage,
+        where: {
+          version: version,
+        },
       })
-      collectionData[collectionSlug].push(nextData[collectionSlug])
-      currPage = nextData.page
-      hasNextPage = nextData.hasNextPage
-    }
 
-    outputJSON[collectionSlug] = collectionData
+      let hasNextPage = collectionData.hasNextPage
+      let currPage = collectionData.page
+
+      while (hasNextPage) {
+        const nextData = await req.payload.find({
+          collection: collectionSlug,
+          limit: 1000,
+          page: currPage + 1,
+          where: {
+            version: version,
+          },
+        })
+
+        // Assuming collectionData is an array and you want to concatenate the results
+        collectionData[collectionSlug].push(nextData[collectionSlug])
+        currPage = nextData.page
+        hasNextPage = nextData.hasNextPage
+      }
+      collectionData['version'] = version
+      // Append to outputJSON key if it exists, otherwise create it
+      if (outputJSON[collectionSlug]) {
+        outputJSON[collectionSlug].push(collectionData)
+      } else {
+        outputJSON[collectionSlug] = [collectionData] // Ensure this is an array
+      }
+    }
   }
+
+  // for (const idx in checkedCollectionsArr) {
+  //   const collectionSlug = checkedCollectionsArr[idx]
+  //   const collectionData = await req.payload.find({ collection: collectionSlug, limit: 1000 })
+
+  //   let hasNextPage = collectionData.hasNextPage
+  //   let currPage = collectionData.page
+  //   while (hasNextPage) {
+  //     const nextData = await req.payload.find({
+  //       collection: collectionSlug,
+  //       limit: 1000,
+  //       page: currPage,
+  //     })
+  //     collectionData[collectionSlug].push(nextData[collectionSlug])
+  //     currPage = nextData.page
+  //     hasNextPage = nextData.hasNextPage
+  //   }
+
+  //   outputJSON[collectionSlug] = collectionData
+  // }
 
   // console.log('outputJSON', outputJSON)
 
