@@ -1,0 +1,171 @@
+.mainContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.exportCell {
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  border: 1.5px solid #3c3c3c;
+}
+
+.exportCell:hover {
+  background-color: #3c3c3c; /* Set your desired hover color */
+}
+
+.exportCell:hover .collection-checkbox {
+  border: 1.5px solid #222222;
+}
+
+.even-color {
+  background-color: #222222;
+}
+
+.odd-color {
+  background-color: #00000000;
+}
+
+.collection-cell {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: row;
+  cursor: pointer;
+  position: relative;
+  margin-bottom: 0.25rem;
+}
+
+.dropdown-cell {
+  width: 100%;
+  height: 4rem;
+  padding-left: 1rem;
+  display: flex;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  cursor: pointer;
+
+  .arrow-container {
+    flex: 20%; /* Adjust as needed */
+    display: flex;
+    justify-content: flex-end; /* Align arrow to the right */
+  }
+
+  .arrow {
+    flex: 20%; /* Adjust as needed */
+    display: inline-block;
+    position: absolute;
+    right: 2rem;
+    top: 40%;
+    transform-origin: center; /* Set the transform origin to the center */
+    transform: rotate(90deg);
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 6px 0 6px 6px;
+    border-color: transparent transparent transparent #8d8d8d;
+    transition: transform 0.3s ease;
+  }
+
+  &.open {
+    .arrow {
+      transform: rotate(0deg);
+      border-color: transparent transparent transparent #efeeee;
+    }
+  }
+
+  &.close {
+    .arrow {
+      transform: rotate(90deg);
+    }
+  }
+
+  .collection-name-container {
+    display: flex;
+    flex: 40%; /* Adjust as needed */
+  }
+
+  .total-version-count {
+    flex: 40%; /* Take full width inside its container */
+    overflow: hidden; /* Ensure content doesn't overflow */
+  }
+
+  .arrow-container {
+    flex: 1; /* Take full width inside its container */
+    overflow: hidden; /* Ensure content doesn't overflow */
+  }
+}
+
+.version-cell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  border: 1px solid #3c3c3c;
+  margin-left: 4rem;
+  cursor: pointer;
+  position: relative;
+}
+
+.version-cell:hover {
+  background-color: #3c3c3c; /* Set your desired hover color */
+}
+
+.version-cell:hover .collection-checkbox {
+  border: 1.5px solid #222222;
+}
+
+.collection-cell::before,
+.version-cell::before {
+  content: '';
+  display: block;
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  left: 2vw;
+  visibility: hidden;
+}
+
+.collection-name {
+  // text-decoration: underline;
+}
+
+/* Add your existing styles */
+
+.collection-checkbox {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  width: 2rem;
+  height: 2rem;
+  border: 1.5px solid #3c3c3c;
+  cursor: pointer;
+  position: relative;
+  line-height: 20px;
+  vertical-align: middle;
+  margin-left: 1.5rem;
+
+  &:checked {
+    &::before {
+      content: '';
+      width: 20px;
+      height: 20px;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: url('data:image/svg+xml;utf8,<svg fill="none" height="100%" stroke="white" viewBox="0 0 24 24" width="100%" xmlns="http://www.w3.org/2000/svg"><polyline points="20 6 9 17 4 12" stroke-width="3"></polyline></svg>')
+        no-repeat center center;
+      background-size: 70%;
+    }
+  }
+}
+
+.checkmark {
+  display: inline-block;
+  margin-left: 5px;
+  color: #333;
+}
