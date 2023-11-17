@@ -13,7 +13,9 @@ type ExportType = {
 
 import './index.scss'
 
-function ExportButton() {
+function ExportButton(props) {
+  const { selectedVersions } = props
+  console.log(selectedVersions)
   const { permissions, user } = useAuth()
   const {
     admin: {
@@ -30,7 +32,9 @@ function ExportButton() {
   const downloadData = async () => {
     try {
       const response = await fetch(
-        `${serverURL}/api/data-exports?collections={"users": ["1.1", "1.2"], "posts": ["1.1"]}`,
+        `${serverURL}/api/data-exports?collections=${JSON.stringify(
+          selectedVersions,
+        ).toLowerCase()}`,
         {
           credentials: 'include',
           headers: {

@@ -12,7 +12,7 @@ async function findData(req: PayloadRequest) {
   const i18n = req.i18n
   const outputJSON = {}
 
-  console.log('request: ', req.body, req)
+  console.log('request: ', req.query['collections'])
 
   const checkedCollectionsArr = JSON.parse(req.query['collections'])
   console.log(checkedCollectionsArr, typeof checkedCollectionsArr)

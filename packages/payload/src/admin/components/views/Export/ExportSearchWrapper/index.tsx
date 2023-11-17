@@ -234,14 +234,14 @@ const ExportSearchWrapper = (props) => {
             className={`showSelectedButton ${showSelected ? 'selected' : ''}`}
             onClick={handleShowSelected}
           >
-            Show Selected
+            Show Selected Collections
           </button>
 
           <button
             className={`showUnselectedButton ${showUnselected ? 'selected' : ''}`}
             onClick={handleShowUnselected}
           >
-            Show Unselected
+            Show Unselected Collections
           </button>
         </div>
         <button className="sortButton" onClick={handleSort}>
@@ -275,7 +275,7 @@ const ExportSearchWrapper = (props) => {
             Select All
           </button>
           <button onClick={handleShowAlert}> Selected Versions </button>
-          <ExportButton />
+          <ExportButton selectedVersions={selectedVersions} />
         </div>
       </div>
 
