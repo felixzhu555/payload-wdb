@@ -244,7 +244,6 @@ async function find<T extends TypeWithID & Record<string, unknown>>(
     // /////////////////////////////////////
 
     if (shouldCommit) await payload.db.commitTransaction(req.transactionID)
-
     return result
   } catch (error: unknown) {
     await killTransaction(req)

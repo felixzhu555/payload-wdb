@@ -16,7 +16,6 @@ import expressMiddleware from './express/middleware'
 import authenticate from './express/middleware/authenticate'
 import errorHandler from './express/middleware/errorHandler'
 import identifyAPI from './express/middleware/identifyAPI'
-import mountEndpoints from './express/mountEndpoints'
 import initStatic from './express/static'
 import initGlobalsHTTP from './globals/initHTTP'
 import graphQLHandler from './graphql/graphQLHandler'
@@ -75,8 +74,6 @@ export const initHTTP = async (incomingOptions: InitOptions): Promise<Payload> =
       )
       initGraphQLPlayground(payload)
     }
-
-    mountEndpoints(options.express, payload.router, payload.config.endpoints)
 
     // Bind router to API
     payload.express.use(payload.config.routes.api, payload.router)
