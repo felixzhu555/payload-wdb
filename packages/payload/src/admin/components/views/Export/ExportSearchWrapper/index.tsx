@@ -24,7 +24,6 @@ const ExportSearchWrapper = (props) => {
   const [selectedVersions, setSelectedVersions] = useState(slugDictionary)
 
   const refreshList = () => {
-    // Logic to compile a new list based on visibility options
     if (showAll) {
       const sortedResults = applySort(searchResults)
       setDisplayList(sortedResults)
@@ -40,9 +39,7 @@ const ExportSearchWrapper = (props) => {
   }
 
   const applySort = (items) => {
-    // Apply sorting based on sortOrder
-    const sortedItems = [...items] // Create a copy of the array
-
+    const sortedItems = [...items]
     if (sortOrder === 'asc' || sortOrder === 'desc') {
       return sortedItems.sort((a, b) => {
         const nameA = a.toLowerCase()
@@ -50,11 +47,11 @@ const ExportSearchWrapper = (props) => {
         return sortOrder === 'asc' ? nameA.localeCompare(nameB) : nameB.localeCompare(nameA)
       })
     } else {
-      // If sortOrder is 'default', maintain the original order
       return sortedItems
     }
   }
 
+  // This section is no longer being used
   const [showAll, setShowAll] = useState(true)
   const [showSelected, setShowSelected] = useState(false)
   const [showUnselected, setShowUnselected] = useState(false)
@@ -90,7 +87,6 @@ const ExportSearchWrapper = (props) => {
   }
 
   useEffect(() => {
-    // Refresh the display list based on visibility options
     refreshList()
   }, [searchResults, sortOrder, showAll, showSelected, showUnselected])
 
@@ -225,7 +221,7 @@ const ExportSearchWrapper = (props) => {
           type="text"
           value={searchQuery}
         />
-        <div className="show-div">
+        {/* <div className="show-div">
           <button className={`showAllButton ${showAll ? 'selected' : ''}`} onClick={handleShowAll}>
             Show All
           </button>
@@ -243,7 +239,7 @@ const ExportSearchWrapper = (props) => {
           >
             Show Unselected Collections
           </button>
-        </div>
+        </div> */}
         <button className="sortButton" onClick={handleSort}>
           {sortOrder === 'asc'
             ? 'Sort By: Ascending'
@@ -258,7 +254,7 @@ const ExportSearchWrapper = (props) => {
           Total Selected Versions: {getTotalSelectedVersionsCount()}
         </div>
         <div className="buttonsContainer">
-          <button
+          {/* <button
             className={`deselectAllButton ${
               getTotalSelectedVersionsCount() === 0 ? 'selectSelected' : ''
             }`}
@@ -266,6 +262,7 @@ const ExportSearchWrapper = (props) => {
           >
             Deselect All
           </button>
+
           <button
             className={`selectAllButton ${
               getTotalSelectedVersionsCount() === getTotalVersionsLength() ? 'selectSelected' : ''
@@ -274,7 +271,8 @@ const ExportSearchWrapper = (props) => {
           >
             Select All
           </button>
-          <button onClick={handleShowAlert}> Selected Versions </button>
+
+          <button onClick={handleShowAlert}> Selected Versions </button> */}
           <ExportButton selectedVersions={selectedVersions} />
         </div>
       </div>

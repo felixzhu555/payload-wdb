@@ -6,12 +6,14 @@ import type { Collection } from '../../../../../exports/types'
 import { SanitizedCollectionConfig } from '../../../../../exports/types'
 import { useAuth } from '../../../utilities/Auth'
 import { useConfig } from '../../../utilities/Config'
+import './index.scss'
+
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 type ExportType = {
   collections: Array<Collection>
 }
-
-import './index.scss'
 
 function ExportButton(props) {
   const { selectedVersions } = props
@@ -30,6 +32,27 @@ function ExportButton(props) {
   const [data, setData] = useState<ExportType | undefined>()
 
   const downloadData = async () => {
+    const toastId = toast.info(`Exporting`)
+
+    let empty = true
+    for (const i in selectedVersions) {
+      console.log(selectedVersions[i])
+      if (selectedVersions[i] && selectedVersions[i].length !== 0) {
+        empty = false
+        break
+      }
+    }
+    if (empty == true) {
+      setTimeout(() => {
+        toast.update(toastId, {
+          autoClose: 3000,
+          render: 'No Collections Selected!',
+          type: 'error',
+        })
+      }, 2000)
+      throw new Error('No Collections Selected')
+    }
+
     try {
       const response = await fetch(
         `${serverURL}/api/data-exports?collections=${JSON.stringify(
@@ -45,6 +68,13 @@ function ExportButton(props) {
       )
 
       if (!response.ok) {
+        setTimeout(() => {
+          toast.update(toastId, {
+            autoClose: 3000,
+            render: `Response was not ok!`,
+            type: 'error',
+          })
+        }, 2000)
         throw new Error('Failed to fetch data')
       }
 
@@ -59,6 +89,13 @@ function ExportButton(props) {
       a.click()
       document.body.removeChild(a)
       URL.revokeObjectURL(url)
+      setTimeout(() => {
+        toast.update(toastId, {
+          autoClose: 3000,
+          render: `Exporting Completed!`,
+          type: toast.TYPE.SUCCESS,
+        })
+      }, 2000)
     } catch (error) {
       console.error('Error downloading data:', error)
     }
@@ -66,7 +103,7 @@ function ExportButton(props) {
 
   return (
     <div className="dropdown-container">
-      <button className="dropdown-button" onClick={downloadData} type="button">
+      <button className="download-button" onClick={downloadData} type="button">
         Download
       </button>
     </div>
