@@ -135,7 +135,12 @@
 
 /* Add your existing styles */
 
-.collection-checkbox {
+.collection-checkbox,
+.version-checkbox,
+.production-checkbox,
+.development-checkbox,
+.disabled-checkbox
+ {
   appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
@@ -164,8 +169,17 @@
   }
 }
 
+.disabled-checkbox {
+  background: url('data:image/svg+xml;utf8,<svg fill="none" height="100%" stroke="white" viewBox="0 0 24 24" width="100%" xmlns="http://www.w3.org/2000/svg"><line x1="4" y1="12" x2="20" y2="12" stroke-width="3"></line></svg>')
+}
+
+
+
+
 .checkmark {
   display: inline-block;
   margin-left: 5px;
   color: #333;
 }
+
+
