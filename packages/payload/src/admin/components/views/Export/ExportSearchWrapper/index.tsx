@@ -16,6 +16,7 @@ const ExportSearchWrapper = (props) => {
   const [sortOrder, setSortOrder] = useState('default')
 
   const [displayList, setDisplayList] = useState(allSearch)
+  const [selectAll, setSelectAll] = useState(false)
 
   const slugDictionary = {}
   allSearch.forEach((slug) => {
@@ -211,6 +212,19 @@ const ExportSearchWrapper = (props) => {
     setSelectedVersions(updatedSelectedVersions)
   }
 
+  const handleCheckboxChange = () => {
+    setSelectAll(!selectAll)
+    const updatedSelectedVersions = {}
+
+    searchResults.forEach((name) => {
+      const slug = name
+      const allVersions = collectionsDict[name].versions
+      updatedSelectedVersions[slug] = selectAll ? [] : [...allVersions]
+    })
+
+    setSelectedVersions(updatedSelectedVersions)
+  }
+
   return (
     <div className="mainContainer">
       <div className="inputContainer">
@@ -250,9 +264,18 @@ const ExportSearchWrapper = (props) => {
       </div>
 
       <div className="alertcontainer">
+        <input
+          checked={selectAll}
+          className={`selectAllCheckbox ${
+            getTotalSelectedVersionsCount() === getTotalVersionsLength() ? 'selectSelected' : ''
+          }`}
+          onChange={handleCheckboxChange}
+          type="checkbox"
+        />
         <div className="selectedVersionsCount">
           Total Selected Versions: {getTotalSelectedVersionsCount()}
         </div>
+
         <div className="buttonsContainer">
           {/* <button
             className={`deselectAllButton ${
@@ -273,6 +296,7 @@ const ExportSearchWrapper = (props) => {
           </button>
 
           <button onClick={handleShowAlert}> Selected Versions </button> */}
+
           <ExportButton selectedVersions={selectedVersions} />
         </div>
       </div>
