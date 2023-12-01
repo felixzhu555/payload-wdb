@@ -17,13 +17,68 @@ async function findData(req: PayloadRequest) {
   const checkedCollectionsArr = JSON.parse(req.query['collections'])
   console.log(checkedCollectionsArr, typeof checkedCollectionsArr)
 
+  /*
+  checkedCollectionsArr =
+  {
+    "posts": [true, true, false],
+    "users": [true, false, false],
+  }
+  */
+
+  /*  
+    TODO: need frontend to send us the checked collections, currently unchecked collections are still being sent.
+  */
+
   for (const collectionSlug of Object.keys(checkedCollectionsArr)) {
-    for (const version of checkedCollectionsArr[collectionSlug]) {
+    const versionsSelected = checkedCollectionsArr[collectionSlug][0]
+    const draftSelected = checkedCollectionsArr[collectionSlug][1]
+    const publishedSelected = checkedCollectionsArr[collectionSlug][2]
+    /*
+    
+      cases: (not sure what each case do)
+        - versionsSelected && draftSelected
+        - versionsSelected && publishedSelected
+        - !versionsSelected && !draftSelected && !publishedSelected
+    */
+    if (versionsSelected && draftSelected) {
+      const collectionData = await req.payload.findVersions({
+        collection: collectionSlug,
+        limit: 1000,
+        overrideAccess: true,
+        where: {
+          _status: {
+            equals: 'draft',
+          },
+        },
+      })
+
+      let hasNextPage = collectionData.hasNextPage
+      let currPage = collectionData.page
+
+      while (hasNextPage) {
+        const nextData = await req.payload.findVersions({
+          collection: collectionSlug,
+          limit: 1000,
+          overrideAccess: true,
+          page: currPage + 1,
+        })
+        collectionData[collectionSlug].push(nextData[collectionSlug])
+        currPage = nextData.page
+        hasNextPage = nextData.hasNextPage
+      }
+
+      outputJSON[collectionSlug] = [collectionData]
+    } else if (versionsSelected && publishedSelected) {
       const collectionData = await req.payload.find({
         collection: collectionSlug,
         limit: 1000,
+        locale: 'en',
+        overrideAccess: true,
+        showHiddenFields: true,
         where: {
-          version: version,
+          _status: {
+            equals: 'published',
+          },
         },
       })
 
@@ -33,49 +88,43 @@ async function findData(req: PayloadRequest) {
       while (hasNextPage) {
         const nextData = await req.payload.find({
           collection: collectionSlug,
-          limit: 1000,
+          limit: 100,
+          locale: 'en',
+          overrideAccess: true,
           page: currPage + 1,
-          where: {
-            version: version,
-          },
+          showHiddenFields: true,
         })
-
-        // Assuming collectionData is an array and you want to concatenate the results
         collectionData[collectionSlug].push(nextData[collectionSlug])
         currPage = nextData.page
         hasNextPage = nextData.hasNextPage
       }
-      collectionData['version'] = version
-      // Append to outputJSON key if it exists, otherwise create it
-      if (outputJSON[collectionSlug]) {
-        outputJSON[collectionSlug].push(collectionData)
-      } else {
-        outputJSON[collectionSlug] = [collectionData] // Ensure this is an array
+      outputJSON[collectionSlug] = [collectionData]
+    } else {
+      const collectionData = await req.payload.find({
+        collection: collectionSlug,
+        limit: 1000,
+        overrideAccess: true,
+        showHiddenFields: true,
+      })
+
+      let hasNextPage = collectionData.hasNextPage
+      let currPage = collectionData.page
+
+      while (hasNextPage) {
+        const nextData = await req.payload.find({
+          collection: collectionSlug,
+          limit: 1000,
+          overrideAccess: true,
+          page: currPage + 1,
+          showHiddenFields: true,
+        })
+        collectionData[collectionSlug].push(nextData[collectionSlug])
+        currPage = nextData.page
+        hasNextPage = nextData.hasNextPage
       }
+      outputJSON[collectionSlug] = [collectionData] // Ensure this is an array
     }
   }
-
-  // for (const idx in checkedCollectionsArr) {
-  //   const collectionSlug = checkedCollectionsArr[idx]
-  //   const collectionData = await req.payload.find({ collection: collectionSlug, limit: 1000 })
-
-  //   let hasNextPage = collectionData.hasNextPage
-  //   let currPage = collectionData.page
-  //   while (hasNextPage) {
-  //     const nextData = await req.payload.find({
-  //       collection: collectionSlug,
-  //       limit: 1000,
-  //       page: currPage,
-  //     })
-  //     collectionData[collectionSlug].push(nextData[collectionSlug])
-  //     currPage = nextData.page
-  //     hasNextPage = nextData.hasNextPage
-  //   }
-
-  //   outputJSON[collectionSlug] = collectionData
-  // }
-
-  // console.log('outputJSON', outputJSON)
 
   return outputJSON
 }
