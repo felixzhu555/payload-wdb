@@ -88,7 +88,7 @@ async function findData(req: PayloadRequest) {
       while (hasNextPage) {
         const nextData = await req.payload.find({
           collection: collectionSlug,
-          limit: 100,
+          limit: 1000,
           locale: 'en',
           overrideAccess: true,
           page: currPage + 1,
