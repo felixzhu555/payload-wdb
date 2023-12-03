@@ -77,7 +77,8 @@ const Export = () => {
   }
 
   useEffect(() => {
-    exportData()
+    // exportData()
+    console.log('COLLECTIONS', collections)
   }, [])
 
   useEffect(() => {
