@@ -29,17 +29,25 @@ async function findData(req: PayloadRequest) {
   */
 
   for (const collectionSlug of Object.keys(checkedCollectionsArr)) {
-    const versionsSelected = checkedCollectionsArr[collectionSlug][0]
-    const draftSelected = checkedCollectionsArr[collectionSlug][1]
-    const publishedSelected = checkedCollectionsArr[collectionSlug][2]
+    if (!(collectionSlug === 'posts' || collectionSlug === 'users')) {
+      continue
+    }
+    const versionsSelected = collectionSlug === 'posts' //checkedCollectionsArr[collectionSlug][0]
+    const draftSelected = true //collectionSlug === 'posts' //checkedCollectionsArr[collectionSlug][1]
+    const publishedSelected = false //collectionSlug === 'posts' //checkedCollectionsArr[collectionSlug][2]
     /*
-    
       cases: (not sure what each case do)
-        - versionsSelected && draftSelected
-        - versionsSelected && publishedSelected
-        - !versionsSelected && !draftSelected && !publishedSelected
+        - versions selected
+        - drafts selected
+        - published selected
+        - none selected
     */
-    if (versionsSelected && draftSelected) {
+
+    // Array of collection data (including versions, drafts, etc)
+    const collectionJSON = {}
+    console.log(collectionSlug)
+    if (draftSelected) {
+      // ensure versions enabled
       const collectionData = await req.payload.findVersions({
         collection: collectionSlug,
         limit: 1000,
@@ -65,9 +73,9 @@ async function findData(req: PayloadRequest) {
         currPage = nextData.page
         hasNextPage = nextData.hasNextPage
       }
-
-      outputJSON[collectionSlug] = [collectionData]
-    } else if (versionsSelected && publishedSelected) {
+      collectionJSON['drafts'] = collectionData
+    }
+    if (publishedSelected) {
       const collectionData = await req.payload.find({
         collection: collectionSlug,
         limit: 1000,
@@ -75,9 +83,18 @@ async function findData(req: PayloadRequest) {
         overrideAccess: true,
         showHiddenFields: true,
         where: {
-          _status: {
-            equals: 'published',
-          },
+          or: [
+            {
+              _status: {
+                equals: 'published',
+              },
+            },
+            {
+              _status: {
+                exists: false,
+              },
+            },
+          ],
         },
       })
 
@@ -97,8 +114,37 @@ async function findData(req: PayloadRequest) {
         currPage = nextData.page
         hasNextPage = nextData.hasNextPage
       }
-      outputJSON[collectionSlug] = [collectionData]
-    } else {
+      collectionJSON['published'] = collectionData
+    }
+    if (versionsSelected) {
+      const collectionData = await req.payload.findVersions({
+        collection: collectionSlug,
+        limit: 1000,
+        locale: 'en',
+        overrideAccess: true,
+        showHiddenFields: true,
+        where: {},
+      })
+
+      let hasNextPage = collectionData.hasNextPage
+      let currPage = collectionData.page
+
+      while (hasNextPage) {
+        const nextData = await req.payload.findVersions({
+          collection: collectionSlug,
+          limit: 1000,
+          locale: 'en',
+          overrideAccess: true,
+          page: currPage + 1,
+          showHiddenFields: true,
+        })
+        collectionData[collectionSlug].push(nextData[collectionSlug])
+        currPage = nextData.page
+        hasNextPage = nextData.hasNextPage
+      }
+      collectionJSON['versions'] = collectionData
+    }
+    if (!versionsSelected && !draftSelected && !publishedSelected) {
       const collectionData = await req.payload.find({
         collection: collectionSlug,
         limit: 1000,
@@ -121,8 +167,9 @@ async function findData(req: PayloadRequest) {
         currPage = nextData.page
         hasNextPage = nextData.hasNextPage
       }
-      outputJSON[collectionSlug] = [collectionData] // Ensure this is an array
+      collectionJSON['collection'] = collectionData
     }
+    outputJSON[collectionSlug] = collectionJSON
   }
 
   return outputJSON
