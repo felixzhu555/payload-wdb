@@ -32,8 +32,8 @@ async function findData(req: PayloadRequest) {
     if (!(collectionSlug === 'posts' || collectionSlug === 'users')) {
       continue
     }
-    const versionsSelected = collectionSlug === 'posts' //checkedCollectionsArr[collectionSlug][0]
-    const draftSelected = true //collectionSlug === 'posts' //checkedCollectionsArr[collectionSlug][1]
+    const versionsSelected = true // collectionSlug === 'posts' //checkedCollectionsArr[collectionSlug][0]
+    const draftSelected = false //collectionSlug === 'posts' //checkedCollectionsArr[collectionSlug][1]
     const publishedSelected = false //collectionSlug === 'posts' //checkedCollectionsArr[collectionSlug][2]
     /*
       cases: (not sure what each case do)
@@ -48,7 +48,7 @@ async function findData(req: PayloadRequest) {
     console.log(collectionSlug)
     if (draftSelected) {
       // ensure versions enabled
-      const collectionData = await req.payload.findVersions({
+      const collectionData = await req.payload.find({
         collection: collectionSlug,
         limit: 1000,
         overrideAccess: true,
@@ -63,11 +63,16 @@ async function findData(req: PayloadRequest) {
       let currPage = collectionData.page
 
       while (hasNextPage) {
-        const nextData = await req.payload.findVersions({
+        const nextData = await req.payload.find({
           collection: collectionSlug,
           limit: 1000,
           overrideAccess: true,
           page: currPage + 1,
+          where: {
+            _status: {
+              equals: 'draft',
+            },
+          },
         })
         collectionData[collectionSlug].push(nextData[collectionSlug])
         currPage = nextData.page
@@ -81,20 +86,10 @@ async function findData(req: PayloadRequest) {
         limit: 1000,
         locale: 'en',
         overrideAccess: true,
-        showHiddenFields: true,
         where: {
-          or: [
-            {
-              _status: {
-                equals: 'published',
-              },
-            },
-            {
-              _status: {
-                exists: false,
-              },
-            },
-          ],
+          _status: {
+            equals: 'published',
+          },
         },
       })
 
@@ -109,6 +104,11 @@ async function findData(req: PayloadRequest) {
           overrideAccess: true,
           page: currPage + 1,
           showHiddenFields: true,
+          where: {
+            _status: {
+              equals: 'published',
+            },
+          },
         })
         collectionData[collectionSlug].push(nextData[collectionSlug])
         currPage = nextData.page
@@ -144,31 +144,33 @@ async function findData(req: PayloadRequest) {
       }
       collectionJSON['versions'] = collectionData
     }
-    if (!versionsSelected && !draftSelected && !publishedSelected) {
-      const collectionData = await req.payload.find({
+
+    //get collection (left side checkbox)
+
+    const mainCollectionData = await req.payload.find({
+      collection: collectionSlug,
+      limit: 1000,
+      overrideAccess: true,
+      showHiddenFields: true,
+    })
+
+    let hasNextPage = mainCollectionData.hasNextPage
+    let currPage = mainCollectionData.page
+
+    while (hasNextPage) {
+      const nextData = await req.payload.find({
         collection: collectionSlug,
         limit: 1000,
         overrideAccess: true,
+        page: currPage + 1,
         showHiddenFields: true,
       })
-
-      let hasNextPage = collectionData.hasNextPage
-      let currPage = collectionData.page
-
-      while (hasNextPage) {
-        const nextData = await req.payload.find({
-          collection: collectionSlug,
-          limit: 1000,
-          overrideAccess: true,
-          page: currPage + 1,
-          showHiddenFields: true,
-        })
-        collectionData[collectionSlug].push(nextData[collectionSlug])
-        currPage = nextData.page
-        hasNextPage = nextData.hasNextPage
-      }
-      collectionJSON['collection'] = collectionData
+      mainCollectionData[collectionSlug].push(nextData[collectionSlug])
+      currPage = nextData.page
+      hasNextPage = nextData.hasNextPage
     }
+    collectionJSON['collection'] = mainCollectionData
+
     outputJSON[collectionSlug] = collectionJSON
   }
 
