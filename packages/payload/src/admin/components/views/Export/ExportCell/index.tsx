@@ -1,17 +1,27 @@
 import React, { useState } from 'react'
 import './index.scss'
+import { setISODay } from 'date-fns'
 
 const ExportCell = (props) => {
-  const { name, color, onCollectionChange, selection, versions } = props
+  const { name, color, onMainSelection, selection, enables } = props
   const [isOpen, setIsOpen] = useState(false)
 
-  const totalVersionCount = versions.length
+  const handleMainButton = () => {
+    onMainSelection(name, 0)
+    setIsOpen((prevIsOpen) => !prevIsOpen)
+  }
 
-  const hypo1 = [true, false, false]
-  const hypo2 = [false, true, true]
-  const hypo3 = [true, true, true]
+  const handleVersionsButton = () => {
+    onMainSelection(name, 1)
+  }
 
-  const hypo = hypo2
+  const handleProductionButton = () => {
+    onMainSelection(name, 2)
+  }
+
+  const handleDraftsButton = () => {
+    onMainSelection(name, 3)
+  }
 
   return (
     <div className="cell-container">
@@ -20,42 +30,56 @@ const ExportCell = (props) => {
           <div className="collection-cell">
             <div className="checkbox-cell">
               <input
-                checked={selection && selection.length > 0}
+                checked={selection[0]}
                 className="collection-checkbox"
-                onChange={() => onCollectionChange(name, versions)}
+                onChange={() => handleMainButton()}
                 type="checkbox"
               />
             </div>
-            <div
-              className={`dropdown-cell ${isOpen ? 'open' : ''}`}
-              onClick={() => setIsOpen(!isOpen)}
-            >
+            <div className={`dropdown-cell ${isOpen ? 'open' : ''}`}>
               <div className="collection-name-container">
                 <span className="collection-name">{name}</span>
                 <span>&nbsp;</span>
-                <span>{'(' + totalVersionCount + ')'}</span>
               </div>
               <div className="total-version-count" />
 
-              <div>
-                {hypo[0] ? (
-                  <input className="version-checkbox" type="checkbox" />
-                ) : (
-                  <input className="disabled-checkbox" type="checkbox" disabled />
-                )}
-
-                {hypo[1] ? (
-                  <input className="production-checkbox" type="checkbox" />
-                ) : (
-                  <input className="disabled-checkbox" type="checkbox" disabled />
-                )}
-
-                {hypo[2] ? (
-                  <input className="development-checkbox" type="checkbox" />
-                ) : (
-                  <input className="disabled-checkbox" type="checkbox" disabled />
-                )}
-              </div>
+              {isOpen && (
+                <div>
+                  Versions:
+                  {enables[0] ? (
+                    <input
+                      className="version-checkbox"
+                      type="checkbox"
+                      checked={selection[1]}
+                      onChange={() => handleVersionsButton()}
+                    />
+                  ) : (
+                    <input className="disabled-checkbox" type="checkbox" disabled />
+                  )}
+                  Production:
+                  {enables[1] ? (
+                    <input
+                      className="production-checkbox"
+                      type="checkbox"
+                      checked={selection[2]}
+                      onChange={() => handleProductionButton()}
+                    />
+                  ) : (
+                    <input className="disabled-checkbox" type="checkbox" disabled />
+                  )}
+                  Drafts:
+                  {enables[2] ? (
+                    <input
+                      className="development-checkbox"
+                      type="checkbox"
+                      checked={selection[3]}
+                      onChange={() => handleDraftsButton()}
+                    />
+                  ) : (
+                    <input className="disabled-checkbox" type="checkbox" disabled />
+                  )}
+                </div>
+              )}
             </div>
           </div>
         </div>

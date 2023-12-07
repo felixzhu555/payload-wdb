@@ -17,7 +17,6 @@ type ExportType = {
 
 function ExportButton(props) {
   const { selectedVersions } = props
-  console.log(selectedVersions)
   const { permissions, user } = useAuth()
   const {
     admin: {

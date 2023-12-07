@@ -6,7 +6,6 @@ import './index.scss'
 
 const ExportList = (props) => {
   const { collectionsDict } = props
-  const collectionNames = Object.keys(collectionsDict)
 
   return (
     <div className="export-list-container">

@@ -22,40 +22,13 @@ const Export = () => {
     serverURL,
   } = useConfig()
   const { i18n } = useTranslation('general')
+
   const [collectionsDict, setCollectionsDict] = useState({})
   const [dataFromChild, setDataFromChild] = useState(null)
 
   const handleDataFromChild = (data) => {
     // Process the data received from the child component
     setDataFromChild(data)
-  }
-
-  const generateRandomVersions = (count) => {
-    const randomVersions = []
-    const generateUniqueVersion = () => {
-      const version = `${Math.floor(Math.random() * 10)}.${Math.floor(Math.random() * 10)}`
-      return randomVersions.includes(version) ? generateUniqueVersion() : version
-    }
-    for (let i = 1; i <= count; i++) {
-      const uniqueVersion = generateUniqueVersion()
-      randomVersions.push(uniqueVersion)
-    }
-    return randomVersions.sort((a, b) => parseFloat(a) - parseFloat(b))
-  }
-
-  function getRandomCountWithDistribution() {
-    const randomNumber = Math.floor(Math.random() * 100) + 1
-    if (randomNumber <= 10) {
-      return 1 // 10%
-    } else if (randomNumber <= 35) {
-      return 2 // 25%
-    } else if (randomNumber <= 65) {
-      return 3 // 30%
-    } else if (randomNumber <= 85) {
-      return 4 // 20%
-    } else {
-      return 5 // 15%
-    }
   }
 
   const exportData = async () => {
@@ -84,17 +57,23 @@ const Export = () => {
     const updatedCollectionsDict = {}
     for (const collection of collections) {
       if (collection.labels && collection.labels.plural) {
+        let enableVersions = false
+        let enableDrafts = false
+        if (collection.versions) {
+          enableVersions = true
+          if (collection.versions.drafts) {
+            enableDrafts = true
+          }
+        }
+
         const tempKey = collection.labels.plural
-        const tempBucket = {}
-        tempBucket['slug'] = collection.slug
-        const randomCount = getRandomCountWithDistribution()
-        tempBucket['versions'] = generateRandomVersions(randomCount) // Change the argument to generate more or fewer versions
-        updatedCollectionsDict[tempKey] = tempBucket
+        updatedCollectionsDict[tempKey] = [enableVersions, enableDrafts]
       }
     }
     setCollectionsDict(updatedCollectionsDict)
   }, [collections])
 
+  console.log(collectionsDict)
   if (collectionsDict && Object.keys(collectionsDict).length > 0) {
     return (
       <React.Fragment>
