@@ -56,18 +56,27 @@ const Export = () => {
   useEffect(() => {
     const updatedCollectionsDict = {}
     for (const collection of collections) {
-      if (collection.labels && collection.labels.plural) {
-        let enableVersions = false
-        let enableDrafts = false
-        if (collection.versions) {
-          enableVersions = true
-          if (collection.versions.drafts) {
-            enableDrafts = true
+      console.log(collection)
+      if (
+        !globals.includes(collection.slug) &&
+        !collection.slug.includes('geo') &&
+        !collection.slug.includes('Payload Preferences') &&
+        !collection.admin.hidden &&
+        !collection.slug.includes('data-exports') &&
+        !collection.slug.includes('backup')
+      ) {
+        if (collection.labels && collection.labels.plural) {
+          let enableVersions = false
+          let enableDrafts = false
+          if (collection.versions) {
+            enableVersions = true
+            if (collection.versions.drafts) {
+              enableDrafts = true
+            }
           }
+          const tempKey = collection.labels.plural
+          updatedCollectionsDict[tempKey] = [enableVersions, enableDrafts]
         }
-
-        const tempKey = collection.labels.plural
-        updatedCollectionsDict[tempKey] = [enableVersions, enableDrafts]
       }
     }
     setCollectionsDict(updatedCollectionsDict)

@@ -1,4 +1,3 @@
-//user permissions and access for data export???
 import type { CollectionConfig } from '../collections/config/types'
 import type { Access, Config } from '../config/types'
 import type { PayloadRequest } from '../express/types'
@@ -17,65 +16,177 @@ async function findData(req: PayloadRequest) {
   const checkedCollectionsArr = JSON.parse(req.query['collections'])
   console.log(checkedCollectionsArr, typeof checkedCollectionsArr)
 
+  /*
+  checkedCollectionsArr =
+  {
+    "posts": [true, true, false],
+    "users": [true, false, false],
+  }
+  */
+
+  /*  
+    TODO: need frontend to send us the checked collections, currently unchecked collections are still being sent.
+  */
+
   for (const collectionSlug of Object.keys(checkedCollectionsArr)) {
-    for (const version of checkedCollectionsArr[collectionSlug]) {
-      const collectionData = await req.payload.find({
+    // if (!(collectionSlug === 'posts' || collectionSlug === 'users')) {
+    //   continue
+    // }
+    const selected = checkedCollectionsArr[collectionSlug][0]
+    if (!selected) {
+      continue
+    }
+    const versionsSelected = checkedCollectionsArr[collectionSlug][1]
+    const publishedSelected = checkedCollectionsArr[collectionSlug][2]
+    const draftSelected = checkedCollectionsArr[collectionSlug][3]
+
+    // Output data
+    const collectionJSON = {}
+    if (draftSelected) {
+      // ensure versions enabled
+      const draftData = await req.payload.find({
         collection: collectionSlug,
         limit: 1000,
+        overrideAccess: true,
         where: {
-          version: version,
+          _status: {
+            equals: 'draft',
+          },
+        },
+      })
+      let hasNextPage = draftData.hasNextPage
+      let currPage = draftData.page
+
+      while (hasNextPage) {
+        const nextDraftData = await req.payload.find({
+          collection: collectionSlug,
+          limit: 1000,
+          overrideAccess: true,
+          page: currPage + 1,
+          where: {
+            _status: {
+              equals: 'draft',
+            },
+          },
+        })
+        if (!(collectionSlug in draftData)) {
+          draftData[collectionSlug] = []
+        }
+        if (nextDraftData[collectionSlug]) {
+          draftData[collectionSlug].push(nextDraftData[collectionSlug].docs)
+        }
+        currPage = nextDraftData.page
+        hasNextPage = nextDraftData.hasNextPage
+      }
+      collectionJSON['drafts'] = draftData.docs
+    }
+    if (publishedSelected) {
+      const publishData = await req.payload.find({
+        collection: collectionSlug,
+        limit: 1000,
+        locale: 'en',
+        overrideAccess: true,
+        where: {
+          _status: {
+            equals: 'published',
+          },
         },
       })
 
-      let hasNextPage = collectionData.hasNextPage
-      let currPage = collectionData.page
+      let hasNextPage = publishData.hasNextPage
+      let currPage = publishData.page
 
       while (hasNextPage) {
-        const nextData = await req.payload.find({
+        const nextPublishData = await req.payload.find({
           collection: collectionSlug,
           limit: 1000,
+          locale: 'en',
+          overrideAccess: true,
           page: currPage + 1,
+          showHiddenFields: true,
           where: {
-            version: version,
+            _status: {
+              equals: 'published',
+            },
           },
         })
-
-        // Assuming collectionData is an array and you want to concatenate the results
-        collectionData[collectionSlug].push(nextData[collectionSlug])
-        currPage = nextData.page
-        hasNextPage = nextData.hasNextPage
+        if (!(collectionSlug in publishData)) {
+          publishData[collectionSlug] = []
+        }
+        if (nextPublishData[collectionSlug]) {
+          publishData[collectionSlug].push(nextPublishData[collectionSlug]).docs
+        }
+        currPage = nextPublishData.page
+        hasNextPage = nextPublishData.hasNextPage
       }
-      collectionData['version'] = version
-      // Append to outputJSON key if it exists, otherwise create it
-      if (outputJSON[collectionSlug]) {
-        outputJSON[collectionSlug].push(collectionData)
-      } else {
-        outputJSON[collectionSlug] = [collectionData] // Ensure this is an array
-      }
+      collectionJSON['published'] = publishData.docs
     }
+    if (versionsSelected) {
+      const versionData = await req.payload.findVersions({
+        collection: collectionSlug,
+        limit: 1000,
+        locale: 'en',
+        overrideAccess: true,
+        showHiddenFields: true,
+        where: {},
+      })
+
+      let hasNextPage = versionData.hasNextPage
+      let currPage = versionData.page
+
+      while (hasNextPage) {
+        const nextVersionData = await req.payload.findVersions({
+          collection: collectionSlug,
+          limit: 1000,
+          locale: 'en',
+          overrideAccess: true,
+          page: currPage + 1,
+          showHiddenFields: true,
+        })
+
+        if (!(collectionSlug in versionData)) {
+          versionData[collectionSlug] = []
+        }
+        if (nextVersionData[collectionSlug]) {
+          versionData[collectionSlug].push(nextVersionData[collectionSlug].docs)
+        }
+        currPage = nextVersionData.page
+        hasNextPage = nextVersionData.hasNextPage
+      }
+      collectionJSON['versions'] = versionData.docs
+    }
+
+    const mainCollectionData = await req.payload.find({
+      collection: collectionSlug,
+      limit: 1000,
+      overrideAccess: true,
+      showHiddenFields: true,
+    })
+
+    let hasNextPage = mainCollectionData.hasNextPage
+    let currPage = mainCollectionData.page
+
+    while (hasNextPage) {
+      const nextData = await req.payload.find({
+        collection: collectionSlug,
+        limit: 1000,
+        overrideAccess: true,
+        page: currPage + 1,
+        showHiddenFields: true,
+      })
+      if (!(collectionSlug in mainCollectionData)) {
+        mainCollectionData[collectionSlug] = []
+      }
+      if (nextData[collectionSlug]) {
+        mainCollectionData[collectionSlug].push(nextData[collectionSlug].docs)
+      }
+      currPage = nextData.page
+      hasNextPage = nextData.hasNextPage
+    }
+    collectionJSON['collection'] = mainCollectionData.docs
+
+    outputJSON[collectionSlug] = collectionJSON
   }
-
-  // for (const idx in checkedCollectionsArr) {
-  //   const collectionSlug = checkedCollectionsArr[idx]
-  //   const collectionData = await req.payload.find({ collection: collectionSlug, limit: 1000 })
-
-  //   let hasNextPage = collectionData.hasNextPage
-  //   let currPage = collectionData.page
-  //   while (hasNextPage) {
-  //     const nextData = await req.payload.find({
-  //       collection: collectionSlug,
-  //       limit: 1000,
-  //       page: currPage,
-  //     })
-  //     collectionData[collectionSlug].push(nextData[collectionSlug])
-  //     currPage = nextData.page
-  //     hasNextPage = nextData.hasNextPage
-  //   }
-
-  //   outputJSON[collectionSlug] = collectionData
-  // }
-
-  // console.log('outputJSON', outputJSON)
 
   return outputJSON
 }

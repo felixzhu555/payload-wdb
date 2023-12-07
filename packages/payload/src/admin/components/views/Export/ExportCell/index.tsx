@@ -1,10 +1,12 @@
-import React, { useState } from 'react'
-import './index.scss'
 import { setISODay } from 'date-fns'
+import React, { useState } from 'react'
+
+import './index.scss'
 
 const ExportCell = (props) => {
-  const { name, color, onMainSelection, selection, enables } = props
+  const { name, color, enables, onMainSelection, selection } = props
   const [isOpen, setIsOpen] = useState(false)
+  console.log(name, enables)
 
   const handleMainButton = () => {
     onMainSelection(name, 0)
@@ -48,35 +50,35 @@ const ExportCell = (props) => {
                   Versions:
                   {enables[0] ? (
                     <input
-                      className="version-checkbox"
-                      type="checkbox"
                       checked={selection[1]}
+                      className="version-checkbox"
                       onChange={() => handleVersionsButton()}
+                      type="checkbox"
                     />
                   ) : (
-                    <input className="disabled-checkbox" type="checkbox" disabled />
+                    <input className="disabled-checkbox" disabled type="checkbox" />
                   )}
-                  Production:
+                  Published:
                   {enables[1] ? (
                     <input
-                      className="production-checkbox"
-                      type="checkbox"
                       checked={selection[2]}
+                      className="production-checkbox"
                       onChange={() => handleProductionButton()}
+                      type="checkbox"
                     />
                   ) : (
-                    <input className="disabled-checkbox" type="checkbox" disabled />
+                    <input className="disabled-checkbox" disabled type="checkbox" />
                   )}
                   Drafts:
-                  {enables[2] ? (
+                  {enables[1] ? (
                     <input
-                      className="development-checkbox"
-                      type="checkbox"
                       checked={selection[3]}
+                      className="development-checkbox"
                       onChange={() => handleDraftsButton()}
+                      type="checkbox"
                     />
                   ) : (
-                    <input className="disabled-checkbox" type="checkbox" disabled />
+                    <input className="disabled-checkbox" disabled type="checkbox" />
                   )}
                 </div>
               )}
