@@ -229,7 +229,6 @@ const getDataExportsCollection: CollectionConfig = {
             buffer = Buffer.concat([buffer, Buffer.from(',', 'utf-8')])
           }
           buffer = Buffer.concat([buffer, Buffer.from('}', 'utf-8')])
-
           args.req.payload
             .create({
               collection: 'backup',
@@ -240,6 +239,7 @@ const getDataExportsCollection: CollectionConfig = {
                 mimetype: 'application/json',
                 size: buffer.byteLength,
               },
+              overrideAccess: true,
               req: args.req,
             })
             .then((backup) => {
@@ -250,6 +250,7 @@ const getDataExportsCollection: CollectionConfig = {
                 data: {
                   file: backup.id,
                 },
+                overrideAccess: true,
                 req: args.req,
               })
             })
