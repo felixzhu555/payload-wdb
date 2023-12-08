@@ -187,7 +187,7 @@ async function findData(req: PayloadRequest) {
 
     outputJSON[collectionSlug] = collectionJSON
   }
-
+  console.log(outputJSON)
   return outputJSON
 }
 
@@ -254,7 +254,6 @@ const getDataExportsCollection: CollectionConfig = {
               })
             })
           console.log('returning buffer1')
-          // update this created export with the relationship to the file
 
           return data
         }

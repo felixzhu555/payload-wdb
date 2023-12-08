@@ -56,7 +56,6 @@ const Export = () => {
   useEffect(() => {
     const updatedCollectionsDict = {}
     for (const collection of collections) {
-      console.log(collection)
       if (
         !globals.includes(collection.slug) &&
         !collection.slug.includes('geo') &&
@@ -75,7 +74,7 @@ const Export = () => {
             }
           }
           const tempKey = collection.labels.plural
-          updatedCollectionsDict[tempKey] = [enableVersions, enableDrafts]
+          updatedCollectionsDict[collection.slug] = [enableVersions, enableDrafts]
         }
       }
     }
